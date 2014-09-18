@@ -1,16 +1,4 @@
-![img.ly](http://i.imgur.com/fgH1HRt.png)
-
-## img.ly Photo Editor SDK for HTML5.
-The img.ly HTML5 SDK is a **fully customisable** photo editor which you can integrate into your HTML5 app within minutes.
-It contains the most important photo editing tools;
-Auto-Enhance, Crop, Rotate, Focus, Brightness, Contrast, Saturation, and more.
-It also features state-of-the-art photo filters, designed and calibrated with a lot of love.
-A Text editor with an elegant and simple to use interface allows adding text instantly to the picture.
-
-![Example](http://i.imgur.com/xR5VSKQ.gif)
-
-### Examples
-See the examples folder for implementation examples or play with the [demo on our website](http://sdk.img.ly/).
+## Photo cropper using img.ly SDK and custom UI
 
 ### License
 Please see [LICENSE](https://github.com/imgly/imgly-sdk-html5/blob/master/LICENSE.md) for licensing details.
