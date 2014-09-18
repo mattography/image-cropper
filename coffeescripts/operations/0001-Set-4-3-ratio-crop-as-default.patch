@@ -1,0 +1,4024 @@
+From 2b11ef839232fdfd78ed48d878f32d50f0fcf287 Mon Sep 17 00:00:00 2001
+From: Jacob Dawid <jacob.dawid@9elements.com>
+Date: Tue, 16 Sep 2014 10:30:59 +0200
+Subject: [PATCH] Set 4:3 ratio crop as default.
+
+---
+ build/imgly.js                                 | 3352 ++++++++++++------------
+ coffeescripts/operations/crop_operation.coffee |    2 +-
+ coffeescripts/ui/controls/crop_control.coffee  |   23 +-
+ 3 files changed, 1684 insertions(+), 1693 deletions(-)
+
+diff --git a/build/imgly.js b/build/imgly.js
+index 8a98502..7ec297e 100644
+--- a/build/imgly.js
++++ b/build/imgly.js
+@@ -3984,61 +3984,6 @@ SlowBuffer.prototype.writeDoubleBE = Buffer.prototype.writeDoubleBE;
+ ;;module.exports=require("buffer-browserify")
+ 
+ },{}],4:[function(require,module,exports){
+-
+-},{"__browserify_Buffer":3,"__browserify_process":1}],5:[function(require,module,exports){
+-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/vendor/queue.coffee",__dirname="/vendor";/*
+-  Common interface for promises.
+-
+-  Use jQuery's Deferreds when in browser environment,
+-  otherwise assume node environment and load kriskowal's q.
+-*/
+-
+-var Queue, provider;
+-
+-provider = typeof window !== "undefined" ? window.jQuery : require("q");
+-
+-/*
+-  Creates a thenable value from the given value.
+-
+-  @param value
+-  @returns {Promise}
+-*/
+-
+-
+-Queue = function() {
+-  return provider.when.apply(provider, arguments);
+-};
+-
+-/*
+-  Creates a new promise.
+-
+-  Calls the resolver which takes as arguments three functions `resolve`,
+-  `reject` and `progress`.
+-
+-  @param {function} resolver
+-  @returns {Promise}
+-*/
+-
+-
+-Queue.promise = (function() {
+-  if (typeof window !== "undefined") {
+-    return function(resolver) {
+-      var d;
+-      d = provider.Deferred();
+-      resolver(d.resolve, d.reject, d.progress);
+-      return d;
+-    };
+-  } else {
+-    return function() {
+-      return provider.promise.apply(provider, arguments);
+-    };
+-  }
+-})();
+-
+-module.exports = Queue;
+-
+-
+-},{"__browserify_Buffer":3,"__browserify_process":1,"q":4}],6:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/utils.coffee",__dirname="/";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -4286,7 +4231,62 @@ Utils.truncate = function(string, length) {
+ module.exports = Utils;
+ 
+ 
+-},{"__browserify_Buffer":3,"__browserify_process":1}],7:[function(require,module,exports){
++},{"__browserify_Buffer":3,"__browserify_process":1}],5:[function(require,module,exports){
++
++},{"__browserify_Buffer":3,"__browserify_process":1}],6:[function(require,module,exports){
++var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/vendor/queue.coffee",__dirname="/vendor";/*
++  Common interface for promises.
++
++  Use jQuery's Deferreds when in browser environment,
++  otherwise assume node environment and load kriskowal's q.
++*/
++
++var Queue, provider;
++
++provider = typeof window !== "undefined" ? window.jQuery : require("q");
++
++/*
++  Creates a thenable value from the given value.
++
++  @param value
++  @returns {Promise}
++*/
++
++
++Queue = function() {
++  return provider.when.apply(provider, arguments);
++};
++
++/*
++  Creates a new promise.
++
++  Calls the resolver which takes as arguments three functions `resolve`,
++  `reject` and `progress`.
++
++  @param {function} resolver
++  @returns {Promise}
++*/
++
++
++Queue.promise = (function() {
++  if (typeof window !== "undefined") {
++    return function(resolver) {
++      var d;
++      d = provider.Deferred();
++      resolver(d.resolve, d.reject, d.progress);
++      return d;
++    };
++  } else {
++    return function() {
++      return provider.promise.apply(provider, arguments);
++    };
++  }
++})();
++
++module.exports = Queue;
++
++
++},{"__browserify_Buffer":3,"__browserify_process":1,"q":5}],7:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/../node_modules/grunt-watchify/node_modules/browserify/node_modules/browser-builtins/builtin/events.js",__dirname="/../node_modules/grunt-watchify/node_modules/browserify/node_modules/browser-builtins/builtin";if (!process.EventEmitter) process.EventEmitter = function () {};
+ 
+ var EventEmitter = exports.EventEmitter = process.EventEmitter;
+@@ -4614,7 +4614,7 @@ Operation = (function(_super) {
+ module.exports = Operation;
+ 
+ 
+-},{"../vendor/queue.coffee":5,"__browserify_Buffer":3,"__browserify_process":1,"events":7}],9:[function(require,module,exports){
++},{"../vendor/queue.coffee":6,"__browserify_Buffer":3,"__browserify_process":1,"events":7}],9:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/filter.coffee",__dirname="/operations/filters";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -4891,7 +4891,7 @@ PhotoProcessor = (function() {
+ module.exports = PhotoProcessor;
+ 
+ 
+-},{"./operations/filters/primitives/identity_filter.coffee":10,"./utils.coffee":6,"./vendor/perf.coffee":2,"./vendor/queue.coffee":5,"__browserify_Buffer":3,"__browserify_process":1}],12:[function(require,module,exports){
++},{"./operations/filters/primitives/identity_filter.coffee":10,"./utils.coffee":4,"./vendor/perf.coffee":2,"./vendor/queue.coffee":6,"__browserify_Buffer":3,"__browserify_process":1}],12:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/base/control.coffee",__dirname="/ui/controls/base";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -5178,8 +5178,8 @@ ListControl = (function(_super) {
+ module.exports = ListControl;
+ 
+ 
+-},{"../../../utils.coffee":6,"./control.coffee":12,"__browserify_Buffer":3,"__browserify_process":1}],14:[function(require,module,exports){
+-/*
++},{"../../../utils.coffee":4,"./control.coffee":12,"__browserify_Buffer":3,"__browserify_process":1}],14:[function(require,module,exports){
++var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/base/slider_control.coffee",__dirname="/ui/controls/base";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+ */
+@@ -5314,7 +5314,7 @@ SliderControl = (function(_super) {
+ module.exports = SliderControl;
+ 
+ 
+-},{"./control.coffee":12}],15:[function(require,module,exports){
++},{"./control.coffee":12,"__browserify_Buffer":3,"__browserify_process":1}],15:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/brightness_control.coffee",__dirname="/ui/controls";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -5381,1353 +5381,516 @@ module.exports = ContrastControl;
+ 
+ 
+ },{"./base/slider_control.coffee":14,"__browserify_Buffer":3,"__browserify_process":1}],17:[function(require,module,exports){
+-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/math/vector2.coffee",__dirname="/math";/*
++var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/contrast_filter.coffee",__dirname="/operations/filters/primitives";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+ */
+ 
+-var Vector2;
++var ContrastFilter, Filter,
++  __hasProp = {}.hasOwnProperty,
++  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+ 
+-Vector2 = (function() {
+-  function Vector2(x, y) {
+-    this.x = x;
+-    this.y = y;
+-    if (this.x == null) {
+-      this.x = 0;
+-    }
+-    if (this.y == null) {
+-      this.y = 0;
++Filter = require("../filter.coffee");
++
++ContrastFilter = (function(_super) {
++  __extends(ContrastFilter, _super);
++
++  function ContrastFilter(app, options) {
++    this.app = app;
++    if (options == null) {
++      options = {};
+     }
++    ContrastFilter.__super__.constructor.apply(this, arguments);
++    this.setContrast(options.contrast);
+   }
+ 
+-  /*
+-    @param {Integer} x
+-    @param {Integer} y
+-  */
+-
++  ContrastFilter.prototype.apply = function(imageData) {
++    var h, index, w, x, y, _i, _j;
++    w = imageData.width;
++    h = imageData.height;
++    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
++      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
++        index = (w * y + x) * 4;
++        if (this.contrast > 0) {
++          imageData.data[index] = (imageData.data[index] - 128) / (1 - this.contrast) + 128;
++          imageData.data[index + 1] = (imageData.data[index + 1] - 128) / (1 - this.contrast) + 128;
++          imageData.data[index + 2] = (imageData.data[index + 2] - 128) / (1 - this.contrast) + 128;
++          imageData.data[index + 3] = 255;
++        } else {
++          imageData.data[index] = (imageData.data[index] - 128) * (1 + this.contrast) + 128;
++          imageData.data[index + 1] = (imageData.data[index + 1] - 128) * (1 + this.contrast) + 128;
++          imageData.data[index + 2] = (imageData.data[index + 2] - 128) * (1 + this.contrast) + 128;
++          imageData.data[index + 3] = 255;
++        }
++      }
++    }
++    return imageData;
++  };
+ 
+-  Vector2.prototype.set = function(x, y) {
+-    this.x = x;
+-    this.y = y;
++  ContrastFilter.prototype.setContrast = function(contrast) {
++    return this.contrast = typeof contrast === 'number' ? contrast : 1.0;
+   };
+ 
+-  /*
+-    @returns {Vector2} A clone of this vector
+-  */
++  return ContrastFilter;
+ 
++})(Filter);
+ 
+-  Vector2.prototype.clone = function() {
+-    return new Vector2(this.x, this.y);
+-  };
++module.exports = ContrastFilter;
+ 
+-  /*
+-    @param {ImglyKit.Vector2} The vector we want to copy
+-  */
+ 
++},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],18:[function(require,module,exports){
++var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/brightness_filter.coffee",__dirname="/operations/filters/primitives";/*
++  ImglyKit
++  Copyright (c) 2013-2014 img.ly
++*/
+ 
+-  Vector2.prototype.copy = function(other) {
+-    this.x = other.x;
+-    this.y = other.y;
+-    return this;
+-  };
++var BrightnessFilter, Filter,
++  __hasProp = {}.hasOwnProperty,
++  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+ 
+-  /*
+-    @param {Integer|Vector2} Minimum value
+-    @param {Integer|Vector2} Maximum value
+-  */
++Filter = require("../filter.coffee");
+ 
++BrightnessFilter = (function(_super) {
++  __extends(BrightnessFilter, _super);
+ 
+-  Vector2.prototype.clamp = function(minimum, maximum) {
+-    if (!(minimum instanceof Vector2)) {
+-      minimum = new Vector2(minimum, minimum);
++  function BrightnessFilter(options) {
++    if (options == null) {
++      options = {};
+     }
+-    if (!(maximum instanceof Vector2)) {
+-      maximum = new Vector2(maximum, maximum);
++    BrightnessFilter.__super__.constructor.apply(this, arguments);
++    this.setBrightness(options.brightness);
++  }
++
++  BrightnessFilter.prototype.apply = function(imageData) {
++    var h, index, w, x, y, _i, _j;
++    w = imageData.width;
++    h = imageData.height;
++    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
++      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
++        index = (w * y + x) * 4;
++        imageData.data[index] = Math.min(imageData.data[index] + this.brightness * 255, 255);
++        imageData.data[index + 1] = Math.min(imageData.data[index + 1] + this.brightness * 255, 255);
++        imageData.data[index + 2] = Math.min(imageData.data[index + 2] + this.brightness * 255, 255);
++        imageData.data[index + 3] = 255;
++      }
+     }
+-    this.x = Math.max(minimum.x, Math.min(maximum.x, this.x));
+-    this.y = Math.max(minimum.y, Math.min(maximum.y, this.y));
+-    return this;
++    return imageData;
+   };
+ 
+-  /*
+-    @param {Object|Rect} The object to multiply with. Must have `width` and `height`
+-  */
+-
+-
+-  Vector2.prototype.multiplyWithRect = function(multiplier) {
+-    this.x *= multiplier.width;
+-    this.y *= multiplier.height;
+-    return this;
++  BrightnessFilter.prototype.setBrightness = function(brightness) {
++    return this.brightness = typeof brightness === 'number' ? brightness : 0.0;
+   };
+ 
+-  /*
+-    @param {Integer|Vector2}
+-  */
+-
++  return BrightnessFilter;
+ 
+-  Vector2.prototype.divide = function(divisor) {
+-    if (divisor instanceof Vector2) {
+-      this.x /= divisor.x;
+-      this.y /= divisor.y;
+-    } else {
+-      this.x /= divisor;
+-      this.y /= divisor;
+-    }
+-    return this;
+-  };
++})(Filter);
+ 
+-  /*
+-    @param {Object|Rect} The object to multiply with. Must have `width` and `height`
+-  */
++module.exports = BrightnessFilter;
+ 
+ 
+-  Vector2.prototype.divideByRect = function(divisor) {
+-    this.x /= divisor.width;
+-    this.y /= divisor.height;
+-    return this;
+-  };
++},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],19:[function(require,module,exports){
++var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/tone_curve_filter.coffee",__dirname="/operations/filters/primitives";/*
++  ImglyKit
++  Copyright (c) 2013-2014 img.ly
++*/
+ 
+-  /*
+-    @param {Integer|Vector2}
+-  */
++var Filter, ToneCurveFilter,
++  __hasProp = {}.hasOwnProperty,
++  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+ 
++Filter = require("../filter.coffee");
+ 
+-  Vector2.prototype.substract = function(subtrahend) {
+-    if (subtrahend instanceof Vector2) {
+-      this.x -= subtrahend.x;
+-      this.y -= subtrahend.y;
++ToneCurveFilter = (function(_super) {
++  __extends(ToneCurveFilter, _super);
++
++  function ToneCurveFilter(app, options) {
++    var rgb;
++    this.app = app;
++    if (options == null) {
++      options = {};
++    }
++    ToneCurveFilter.__super__.constructor.apply(this, arguments);
++    if (this.rgbControlPoints || (options.rgbControlPoints != null)) {
++      rgb = this.rgbControlPoints || options.rgbControlPoints;
++      if (this.redControlPoints == null) {
++        this.redControlPoints = rgb;
++      }
++      if (this.greenControlPoints == null) {
++        this.greenControlPoints = rgb;
++      }
++      if (this.blueControlPoints == null) {
++        this.blueControlPoints = rgb;
++      }
+     } else {
+-      this.x -= subtrahend;
+-      this.y -= subtrahend;
++      if (this.redControlPoints == null) {
++        this.redControlPoints = options.redControlPoints;
++      }
++      if (this.greenControlPoints == null) {
++        this.greenControlPoints = options.greenControlPoints;
++      }
++      if (this.blueControlPoints == null) {
++        this.blueControlPoints = options.blueControlPoints;
++      }
+     }
+-    return this;
+-  };
+-
+-  /*
+-    @param {Rect} The object to substract
+-  */
++    if (this.redControlPoints && this.greenControlPoints && this.blueControlPoints) {
++      this.updateToneCurveTexture();
++    }
++  }
+ 
++  ToneCurveFilter.prototype.render = function(context, w, h) {
++    return context.putImageData(this.apply(context.getImageData(0, 0, w, h)), 0, 0);
++  };
+ 
+-  Vector2.prototype.substractRect = function(subtrahend) {
+-    this.x -= subtrahend.width;
+-    this.y -= subtrahend.height;
+-    return this;
++  ToneCurveFilter.prototype.apply = function(imageData) {
++    var h, index, w, x, y, _i, _j;
++    w = imageData.width;
++    h = imageData.height;
++    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
++      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
++        index = (w * y + x) * 4;
++        imageData.data[index] = imageData.data[index] + this.preparedRed[imageData.data[index]];
++        imageData.data[index + 1] = imageData.data[index + 1] + this.preparedGreen[imageData.data[index + 1]];
++        imageData.data[index + 2] = imageData.data[index + 2] + this.preparedBlue[imageData.data[index + 2]];
++        imageData.data[index + 3] = 255;
++      }
++    }
++    return imageData;
+   };
+ 
+-  /*
+-    @param {Rect} The object to add
+-  */
++  ToneCurveFilter.prototype.updateToneCurveTexture = function() {
++    this.preparedRed = this.getPreparedSplineCurve(this.redControlPoints);
++    this.preparedBlue = this.getPreparedSplineCurve(this.blueControlPoints);
++    return this.preparedGreen = this.getPreparedSplineCurve(this.greenControlPoints);
++  };
+ 
++  ToneCurveFilter.prototype.getPreparedSplineCurve = function(points) {
++    var convertedPoints, distance, firstSplinePoint, i, newPoint, origPoint, point, preparedSplinePoints, sortedPoints, splinePoints, _i, _j, _k, _len, _ref, _ref1;
++    sortedPoints = points.sort(function(a, b) {
++      var x1, x2;
++      x1 = a[0];
++      x2 = b[0];
++      return x1 > x2;
++    });
++    convertedPoints = [];
++    for (_i = 0, _len = points.length; _i < _len; _i++) {
++      point = points[_i];
++      newPoint = [point[0] * 255, point[1] * 255];
++      convertedPoints.push(newPoint);
++    }
++    splinePoints = this.splineCurve(convertedPoints);
++    firstSplinePoint = splinePoints[0];
++    if (firstSplinePoint[0] > 0) {
++      for (i = _j = 0, _ref = firstSplinePoint[0]; 0 <= _ref ? _j < _ref : _j > _ref; i = 0 <= _ref ? ++_j : --_j) {
++        splinePoints.unshift([0, 0]);
++      }
++    }
++    preparedSplinePoints = [];
++    for (i = _k = 0, _ref1 = splinePoints.length; 0 <= _ref1 ? _k < _ref1 : _k > _ref1; i = 0 <= _ref1 ? ++_k : --_k) {
++      newPoint = splinePoints[i];
++      origPoint = [newPoint[0], newPoint[0]];
++      distance = Math.sqrt(Math.pow(origPoint[0] - newPoint[0], 2) + Math.pow(origPoint[1] - newPoint[1], 2));
++      if (origPoint[1] > newPoint[1]) {
++        distance = -distance;
++      }
++      preparedSplinePoints.push(distance);
++    }
++    return preparedSplinePoints;
++  };
+ 
+-  Vector2.prototype.addRect = function(addend) {
+-    this.x += addend.width;
+-    this.y += addend.height;
+-    return this;
++  ToneCurveFilter.prototype.splineCurve = function(points) {
++    var a, b, cur, h, i, n, next, output, sd, sdA, t, x, y, _i, _j, _k, _ref, _ref1, _ref2;
++    sdA = this.secondDerivative(points);
++    n = sdA.length;
++    sd = [];
++    for (i = _i = 0; 0 <= n ? _i < n : _i > n; i = 0 <= n ? ++_i : --_i) {
++      sd[i] = sdA[i];
++    }
++    output = [];
++    for (i = _j = 0, _ref = n - 1; 0 <= _ref ? _j < _ref : _j > _ref; i = 0 <= _ref ? ++_j : --_j) {
++      cur = points[i];
++      next = points[i + 1];
++      for (x = _k = _ref1 = cur[0], _ref2 = next[0]; _ref1 <= _ref2 ? _k < _ref2 : _k > _ref2; x = _ref1 <= _ref2 ? ++_k : --_k) {
++        t = (x - cur[0]) / (next[0] - cur[0]);
++        a = 1 - t;
++        b = t;
++        h = next[0] - cur[0];
++        y = a * cur[1] + b * next[1] + (h * h / 6) * ((a * a * a - a) * sd[i] + (b * b * b - b) * sd[i + 1]);
++        if (y > 255) {
++          y = 255;
++        } else if (y < 0) {
++          y = 0;
++        }
++        output.push([x, y]);
++      }
++    }
++    if (output.length === 255) {
++      output.push(points.pop());
++    }
++    return output;
+   };
+ 
+-  /*
+-    @param {Integer|Vector2}
+-  */
++  ToneCurveFilter.prototype.secondDerivative = function(points) {
++    var P1, P2, P3, i, k, matrix, n, result, y2, _i, _j, _k, _l, _ref, _ref1;
++    n = points.length;
++    if (n <= 0 || n === 1) {
++      return null;
++    }
++    matrix = [];
++    result = [];
++    matrix[0] = [0, 1, 0];
++    for (i = _i = 1, _ref = n - 1; 1 <= _ref ? _i < _ref : _i > _ref; i = 1 <= _ref ? ++_i : --_i) {
++      P1 = points[i - 1];
++      P2 = points[i];
++      P3 = points[i + 1];
++      if (matrix[i] == null) {
++        matrix[i] = [];
++      }
++      matrix[i][0] = (P2[0] - P1[0]) / 6;
++      matrix[i][1] = (P3[0] - P1[0]) / 3;
++      matrix[i][2] = (P3[0] - P2[0]) / 6;
++      result[i] = (P3[1] - P2[1]) / (P3[0] - P2[0]) - (P2[1] - P1[1]) / (P2[0] - P1[0]);
++    }
++    result[0] = 0;
++    result[n - 1] = 0;
++    matrix[n - 1] = [0, 1, 0];
++    for (i = _j = 1; 1 <= n ? _j < n : _j > n; i = 1 <= n ? ++_j : --_j) {
++      k = matrix[1][0] / matrix[i - 1][1];
++      matrix[i][1] -= k * matrix[i - 1][2];
++      matrix[i][0] = 0;
++      result[i] -= k * result[i - 1];
++    }
++    for (i = _k = _ref1 = n - 2; _ref1 <= 0 ? _k < 0 : _k > 0; i = _ref1 <= 0 ? ++_k : --_k) {
++      k = matrix[i][2] / matrix[i + 1][1];
++      matrix[i][1] -= k * matrix[i + 1][0];
++      matrix[i][2] = 0;
++      result[i] -= k * result[i + 1];
++    }
++    y2 = [];
++    for (i = _l = 0; 0 <= n ? _l < n : _l > n; i = 0 <= n ? ++_l : --_l) {
++      y2[i] = result[i] / matrix[i][1];
++    }
++    return y2;
++  };
+ 
++  ToneCurveFilter.prototype.setRedControlPoints = function(controlPoints) {
++    return this.redControlPoints = controlPoints;
++  };
+ 
+-  Vector2.prototype.add = function(addend) {
+-    if (addend instanceof Vector2) {
+-      this.x += addend.x;
+-      this.y += addend.y;
+-    } else {
+-      this.x += addend;
+-      this.y += addend;
+-    }
+-    return this;
++  ToneCurveFilter.prototype.setGreenControlPoints = function(controlPoints) {
++    return this.greenControlPoints = controlPoints;
+   };
+ 
+-  Vector2.prototype.toString = function() {
+-    return "Vector2({ x: " + this.x + ", y: " + this.y + " })";
++  ToneCurveFilter.prototype.setBlueControlPoints = function(controlPoints) {
++    return this.blueControlPoints = controlPoints;
+   };
+ 
+-  return Vector2;
++  return ToneCurveFilter;
+ 
+-})();
++})(Filter);
+ 
+-module.exports = Vector2;
++module.exports = ToneCurveFilter;
+ 
+ 
+-},{"__browserify_Buffer":3,"__browserify_process":1}],18:[function(require,module,exports){
+-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/math/rect.coffee",__dirname="/math";/*
++},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],20:[function(require,module,exports){
++var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/a15_filter.coffee",__dirname="/operations/filters";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+ */
+ 
+-var Rect;
++var A15Filter, BrightnessFilter, ContrastFilter, Filter, ToneCurveFilter, _ref,
++  __hasProp = {}.hasOwnProperty,
++  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+ 
+-Rect = (function() {
+-  function Rect(x, y, width, height) {
+-    this.x = x;
+-    this.y = y;
+-    this.width = width;
+-    this.height = height;
+-    if (this.x == null) {
+-      this.x = 0;
+-    }
+-    if (this.y == null) {
+-      this.y = 0;
+-    }
+-    if (this.width == null) {
+-      this.width = 0;
+-    }
+-    if (this.height == null) {
+-      this.height = 0;
+-    }
+-  }
++Filter = require("./filter.coffee");
+ 
+-  /*
+-    @param {Integer} x
+-    @param {Integer} y
+-    @param {Integer} width
+-    @param {Integer} height
+-  */
++ContrastFilter = require("./primitives/contrast_filter.coffee");
+ 
++BrightnessFilter = require("./primitives/brightness_filter.coffee");
+ 
+-  Rect.prototype.set = function(x, y, width, height) {
+-    this.x = x;
+-    this.y = y;
+-    this.width = width;
+-    this.height = height;
+-  };
++ToneCurveFilter = require("./primitives/tone_curve_filter.coffee");
+ 
+-  /*
+-    @param {Integer} x
+-    @param {Integer} y
+-  */
++A15Filter = (function(_super) {
++  __extends(A15Filter, _super);
+ 
++  function A15Filter() {
++    _ref = A15Filter.__super__.constructor.apply(this, arguments);
++    return _ref;
++  }
+ 
+-  Rect.prototype.setPosition = function(x, y) {
+-    this.x = x;
+-    this.y = y;
+-  };
++  A15Filter.prototype.apply = (new ContrastFilter(A15Filter.app, {
++    contrast: -0.37
++  })).compose(BrightnessFilter, {
++    brightness: 0.12
++  }).compose(ToneCurveFilter, {
++    redControlPoints: [[0, 38 / 255], [94 / 255, 94 / 255], [148 / 255, 142 / 255], [175 / 255, 187 / 255], [1, 1]],
++    greenControlPoints: [[0, 0], [77 / 255, 53 / 255], [171 / 255, 190 / 255], [1, 1]],
++    blueControlPoints: [[0, 10 / 255], [48 / 255, 85 / 255], [174 / 255, 228 / 255], [1, 1]]
++  });
+ 
+-  /*
+-    @param {Integer} width
+-    @param {Integer} height
+-  */
++  return A15Filter;
+ 
++})(Filter);
+ 
+-  Rect.prototype.setDimensions = function(width, height) {
+-    this.width = width;
+-    this.height = height;
+-  };
++module.exports = A15Filter;
+ 
+-  /*
+-    @param {ImglyKit.Rect} The vector we want to copy
+-  */
+ 
++},{"./filter.coffee":9,"./primitives/brightness_filter.coffee":18,"./primitives/contrast_filter.coffee":17,"./primitives/tone_curve_filter.coffee":19,"__browserify_Buffer":3,"__browserify_process":1}],21:[function(require,module,exports){
++var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/grayscale_filter.coffee",__dirname="/operations/filters/primitives";/*
++  ImglyKit
++  Copyright (c) 2013-2014 img.ly
++*/
++
++var Filter, GrayscaleFilter, _ref,
++  __hasProp = {}.hasOwnProperty,
++  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+ 
+-  Rect.prototype.copy = function(other) {
+-    this.x = other.x;
+-    this.y = other.y;
+-    this.width = other.width;
+-    this.height = other.height;
+-    return this;
+-  };
++Filter = require("../filter.coffee");
+ 
+-  Rect.prototype.toString = function() {
+-    return "Rect({ x: " + this.x + ", y: " + this.y + ", width: " + this.width + ", height: " + this.height + " })";
++GrayscaleFilter = (function(_super) {
++  __extends(GrayscaleFilter, _super);
++
++  function GrayscaleFilter() {
++    _ref = GrayscaleFilter.__super__.constructor.apply(this, arguments);
++    return _ref;
++  }
++
++  GrayscaleFilter.prototype.apply = function(imageData) {
++    var h, index, luminance, w, x, y, _i, _j;
++    w = imageData.width;
++    h = imageData.height;
++    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
++      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
++        index = (w * y + x) * 4;
++        luminance = imageData.data[index] * 0.2125 + imageData.data[index + 1] * 0.7154 + imageData.data[index + 2] * 0.0721;
++        imageData.data[index] = luminance;
++        imageData.data[index + 1] = luminance;
++        imageData.data[index + 2] = luminance;
++        imageData.data[index + 3] = 255;
++      }
++    }
++    return imageData;
+   };
+ 
+-  return Rect;
++  return GrayscaleFilter;
+ 
+-})();
++})(Filter);
+ 
+-module.exports = Rect;
++module.exports = GrayscaleFilter;
+ 
+ 
+-},{"__browserify_Buffer":3,"__browserify_process":1}],19:[function(require,module,exports){
+-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/crop_operation.coffee",__dirname="/operations";/*
++},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],22:[function(require,module,exports){
++var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/bw_filter.coffee",__dirname="/operations/filters";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+ */
+ 
+-var CropOperation, Operation, Utils, Vector2,
+-  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
++var BWFilter, GrayscaleFilter, _ref,
+   __hasProp = {}.hasOwnProperty,
+   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+ 
+-Operation = require("./operation.coffee");
++GrayscaleFilter = require("./primitives/grayscale_filter.coffee");
+ 
+-Utils = require("../utils.coffee");
++BWFilter = (function(_super) {
++  __extends(BWFilter, _super);
+ 
+-Vector2 = require("../math/vector2.coffee");
++  function BWFilter() {
++    _ref = BWFilter.__super__.constructor.apply(this, arguments);
++    return _ref;
++  }
+ 
+-CropOperation = (function(_super) {
+-  __extends(CropOperation, _super);
++  return BWFilter;
+ 
+-  CropOperation.prototype.renderPreview = false;
++})(GrayscaleFilter);
+ 
+-  function CropOperation(app, options) {
+-    var _base, _base1, _base2;
+-    this.app = app;
+-    this.options = options != null ? options : {};
+-    this.setRatio = __bind(this.setRatio, this);
+-    CropOperation.__super__.constructor.apply(this, arguments);
+-    if ((_base = this.options).start == null) {
+-      _base.start = new Vector2(0.1, 0.1);
+-    }
+-    if ((_base1 = this.options).end == null) {
+-      _base1.end = new Vector2(0.9, 0.9);
+-    }
+-    if ((_base2 = this.options).ratio == null) {
+-      _base2.ratio = 0;
+-    }
+-  }
++module.exports = BWFilter;
+ 
+-  CropOperation.prototype.setRatio = function(ratio) {
+-    this.options.ratio = ratio;
+-    return this.setSize("custom");
+-  };
+ 
+-  CropOperation.prototype.setSize = function(size) {
+-    var h, height, w, width, _ref;
+-    _ref = this.app.ui.getCanvas().getImageData(), width = _ref.width, height = _ref.height;
+-    this.options.size = size;
+-    this.options.start.set(0.1, 0.1);
+-    this.options.end.set(0.9, 0.9);
+-    switch (size) {
+-      case "square":
+-        this.options.ratio = 1;
+-        break;
+-      case "4:3":
+-        this.options.ratio = 4 / 3;
+-        break;
+-      case "16:9":
+-        this.options.ratio = 16 / 9;
+-        break;
+-      case "free":
+-        this.options.ratio = 0;
+-    }
+-    if (this.options.ratio) {
+-      if (width / height <= this.options.ratio) {
+-        this.options.start.x = 0.1;
+-        this.options.end.x = 0.9;
+-        h = 1 / height * (width / this.options.ratio * 0.8);
+-        this.options.start.y = (1 - h) / 2;
+-        this.options.end.y = 1 - this.options.start.y;
+-      } else {
+-        this.options.start.y = 0.1;
+-        this.options.end.y = 0.9;
+-        w = 1 / width * (this.options.ratio * height * 0.8);
+-        this.options.start.x = (1 - w) / 2;
+-        this.options.end.x = 1 - this.options.start.x;
+-      }
+-    }
+-    return this.emit("updateOptions", this.options);
+-  };
++},{"./primitives/grayscale_filter.coffee":21,"__browserify_Buffer":3,"__browserify_process":1}],23:[function(require,module,exports){
++var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/bw_hard_filter.coffee",__dirname="/operations/filters";/*
++  ImglyKit
++  Copyright (c) 2013-2014 img.ly
++*/
+ 
+-  CropOperation.prototype.setStart = function(x, y) {
+-    this.options.start.x = x;
+-    return this.options.start.y = y;
+-  };
++var BWHardFilter, ContrastFilter, Filter, GrayscaleFilter, _ref,
++  __hasProp = {}.hasOwnProperty,
++  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+ 
+-  CropOperation.prototype.setEnd = function(x, y) {
+-    this.options.end.x = x;
+-    return this.options.end.y = y;
+-  };
++Filter = require("./filter.coffee");
+ 
+-  CropOperation.prototype.apply = function(imageData) {
+-    var canvas, context, h, height, w, width, x, y;
+-    width = imageData.width, height = imageData.height;
+-    canvas = Utils.newCanvasFromImageData(imageData);
+-    context = canvas.getContext("2d");
+-    x = width * this.options.start.x;
+-    y = height * this.options.start.y;
+-    w = width * (this.options.end.x - this.options.start.x);
+-    h = height * (this.options.end.y - this.options.start.y);
+-    return context.getImageData(x, y, w, h);
+-  };
++GrayscaleFilter = require("./primitives/grayscale_filter.coffee");
+ 
+-  return CropOperation;
++ContrastFilter = require("./primitives/contrast_filter.coffee");
+ 
+-})(Operation);
++BWHardFilter = (function(_super) {
++  __extends(BWHardFilter, _super);
+ 
+-module.exports = CropOperation;
++  function BWHardFilter() {
++    _ref = BWHardFilter.__super__.constructor.apply(this, arguments);
++    return _ref;
++  }
++
++  BWHardFilter.prototype.apply = (new GrayscaleFilter).compose(ContrastFilter, {
++    contrast: 0.5
++  });
++
++  return BWHardFilter;
++
++})(Filter);
++
++module.exports = BWHardFilter;
+ 
+ 
+-},{"../math/vector2.coffee":17,"../utils.coffee":6,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],20:[function(require,module,exports){
+-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/crop_control.coffee",__dirname="/ui/controls";/*
++},{"./filter.coffee":9,"./primitives/contrast_filter.coffee":17,"./primitives/grayscale_filter.coffee":21,"__browserify_Buffer":3,"__browserify_process":1}],24:[function(require,module,exports){
++var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/desaturation_filter.coffee",__dirname="/operations/filters/primitives";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+ */
+ 
+-var CropControl, CropOperation, ListControl, Rect, Vector2,
++var DesaturationFilter, Filter,
+   __hasProp = {}.hasOwnProperty,
+   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+ 
+-ListControl = require("./base/list_control.coffee");
++Filter = require("../filter.coffee");
+ 
+-Vector2 = require("../../math/vector2.coffee");
++DesaturationFilter = (function(_super) {
++  __extends(DesaturationFilter, _super);
+ 
+-Rect = require("../../math/rect.coffee");
++  function DesaturationFilter(app, options) {
++    this.app = app;
++    if (options == null) {
++      options = {};
++    }
++    DesaturationFilter.__super__.constructor.apply(this, arguments);
++    if (this.desaturation == null) {
++      this.desaturation = options != null ? options.desaturation : void 0;
++    }
++  }
+ 
+-CropOperation = require("../../operations/crop_operation.coffee");
++  DesaturationFilter.prototype.apply = function(imageData) {
++    var h, index, luminance, w, x, y, _i, _j;
++    w = imageData.width;
++    h = imageData.height;
++    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
++      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
++        index = (w * y + x) * 4;
++        luminance = imageData.data[index] * 0.3 + imageData.data[index + 1] * 0.59 + imageData.data[index + 2] * 0.11;
++        imageData.data[index] = luminance * (1 - this.desaturation) + (imageData.data[index] * this.desaturation);
++        imageData.data[index + 1] = luminance * (1 - this.desaturation) + (imageData.data[index + 1] * this.desaturation);
++        imageData.data[index + 2] = luminance * (1 - this.desaturation) + (imageData.data[index + 2] * this.desaturation);
++        imageData.data[index + 3] = 255;
++      }
++    }
++    return imageData;
++  };
+ 
+-CropControl = (function(_super) {
+-  __extends(CropControl, _super);
++  return DesaturationFilter;
+ 
+-  CropControl.prototype.minimumCropSize = 50;
+-
+-  /*
+-    @param {ImglyKit} app
+-    @param {ImglyKit.UI} ui
+-    @param {ImglyKit.UI.Controls} controls
+-  */
+-
+-
+-  function CropControl(app, ui, controls) {
+-    this.app = app;
+-    this.ui = ui;
+-    this.controls = controls;
+-    CropControl.__super__.constructor.apply(this, arguments);
+-    this.listItems = [
+-      {
+-        name: "Custom",
+-        cssClass: "custom",
+-        method: "setSize",
+-        "arguments": ["free"],
+-        operation: CropOperation,
+-        tooltip: "Freeform crop",
+-        "default": true,
+-        options: {
+-          size: "free"
+-        }
+-      }, {
+-        name: "Square",
+-        cssClass: "square",
+-        method: "setSize",
+-        "arguments": ["square"],
+-        operation: CropOperation,
+-        tooltip: "Squared crop",
+-        options: {
+-          size: "square"
+-        }
+-      }, {
+-        name: "4:3",
+-        cssClass: "4-3",
+-        method: "setSize",
+-        "arguments": ["4:3"],
+-        operation: CropOperation,
+-        tooltip: "4:3 crop",
+-        options: {
+-          size: "4:3"
+-        }
+-      }, {
+-        name: "16:9",
+-        cssClass: "16-9",
+-        method: "setSize",
+-        "arguments": ["16:9"],
+-        operation: CropOperation,
+-        tooltip: "16:9 crop",
+-        options: {
+-          size: "16:9"
+-        }
+-      }
+-    ];
+-  }
+-
+-  CropControl.prototype.updateOptions = function(operationOptions) {
+-    this.operationOptions = operationOptions;
+-    return this.resizeCanvasControls();
+-  };
+-
+-  /*
+-    @param {jQuery.Object} canvasControlsContainer
+-  */
+-
+-
+-  CropControl.prototype.hasCanvasControls = true;
+-
+-  CropControl.prototype.setupCanvasControls = function(canvasControlsContainer) {
+-    var div, position, _i, _j, _len, _len1, _ref, _ref1;
+-    this.canvasControlsContainer = canvasControlsContainer;
+-    /*
+-      Create the dark parts around the cropped area
+-    */
+-
+-    this.spotlightDivs = {};
+-    _ref = ["tl", "tc", "tr", "lc", "rc", "bl", "bc", "br"];
+-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+-      position = _ref[_i];
+-      div = $("<div>").addClass(ImglyKit.classPrefix + "canvas-cropping-spotlight").addClass(ImglyKit.classPrefix + "canvas-cropping-spotlight-" + position).appendTo(this.canvasControlsContainer);
+-      this.spotlightDivs[position] = div;
+-    }
+-    /*
+-      Create the center div (cropped area)
+-    */
+-
+-    this.centerDiv = $("<div>").addClass(ImglyKit.classPrefix + "canvas-cropping-center").appendTo(this.canvasControlsContainer);
+-    /*
+-      Create the knobs the user can use to resize the cropped area
+-    */
+-
+-    this.knobs = {};
+-    _ref1 = ["tl", "tr", "bl", "br"];
+-    for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+-      position = _ref1[_j];
+-      div = $("<div>").addClass(ImglyKit.classPrefix + "canvas-knob").appendTo(this.canvasControlsContainer);
+-      this.knobs[position] = div;
+-    }
+-    this.handleCenterDragging();
+-    this.handleTopLeftKnob();
+-    this.handleBottomRightKnob();
+-    this.handleBottomLeftKnob();
+-    return this.handleTopRightKnob();
+-  };
+-
+-  /*
+-    Handles the dragging of the upper right knob
+-  */
+-
+-
+-  CropControl.prototype.handleTopRightKnob = function() {
+-    var knob,
+-      _this = this;
+-    knob = this.knobs.tr;
+-    return knob.mousedown(function(e) {
+-      var canvasRect, initialEnd, initialMousePosition, initialStart, ratio;
+-      canvasRect = new Rect(0, 0, _this.canvasControlsContainer.width(), _this.canvasControlsContainer.height());
+-      initialMousePosition = new Vector2(e.clientX, e.clientY);
+-      initialStart = _this.operationOptions.start.clone();
+-      initialEnd = _this.operationOptions.end.clone();
+-      ratio = _this.operationOptions.ratio;
+-      $(document).mouseup(function(e) {
+-        $(document).off("mouseup");
+-        return $(document).off("mousemove");
+-      });
+-      return $(document).mousemove(function(e) {
+-        var diffMousePosition, endInPixels, heightInPixels, startInPixels, widthInPixels;
+-        diffMousePosition = new Vector2(e.clientX, e.clientY).substract(initialMousePosition);
+-        endInPixels = new Vector2().copy(initialEnd).multiplyWithRect(canvasRect);
+-        startInPixels = new Vector2().copy(initialStart).multiplyWithRect(canvasRect);
+-        if (_this.operationOptions.ratio === 0) {
+-          _this.operationOptions.start.copy(startInPixels);
+-          _this.operationOptions.start.y += diffMousePosition.y;
+-          _this.operationOptions.start.clamp(new Vector2(startInPixels.x, 1), new Vector2(startInPixels.x, endInPixels.y - 50)).divideByRect(canvasRect);
+-          _this.operationOptions.end.copy(endInPixels);
+-          _this.operationOptions.end.x += diffMousePosition.x;
+-          _this.operationOptions.end.clamp(new Vector2(startInPixels.x + 50, endInPixels.y), new Vector2(canvasRect.width - 1, endInPixels.y)).divideByRect(canvasRect);
+-        } else {
+-          endInPixels.x += (diffMousePosition.x - diffMousePosition.y) / 2;
+-          endInPixels.clamp(startInPixels.x + 50, canvasRect.width - 1);
+-          widthInPixels = endInPixels.x - startInPixels.x;
+-          heightInPixels = widthInPixels / _this.operationOptions.ratio;
+-          if (endInPixels.y - heightInPixels < 1) {
+-            heightInPixels = _this.operationOptions.end.y * canvasRect.height - 1;
+-            widthInPixels = heightInPixels * _this.operationOptions.ratio;
+-          }
+-          _this.operationOptions.end.x = (startInPixels.x + widthInPixels) / canvasRect.width;
+-          _this.operationOptions.start.y = (endInPixels.y - heightInPixels) / canvasRect.height;
+-        }
+-        return _this.resizeCanvasControls();
+-      });
+-    });
+-  };
+-
+-  /*
+-    Handles the dragging of the lower left knob
+-  */
+-
+-
+-  CropControl.prototype.handleBottomLeftKnob = function() {
+-    var knob,
+-      _this = this;
+-    knob = this.knobs.bl;
+-    return knob.mousedown(function(e) {
+-      var canvasRect, initialEnd, initialMousePosition, initialStart, ratio;
+-      canvasRect = new Rect(0, 0, _this.canvasControlsContainer.width(), _this.canvasControlsContainer.height());
+-      initialMousePosition = new Vector2(e.clientX, e.clientY);
+-      initialStart = _this.operationOptions.start.clone();
+-      initialEnd = _this.operationOptions.end.clone();
+-      ratio = _this.operationOptions.ratio;
+-      $(document).mouseup(function(e) {
+-        $(document).off("mouseup");
+-        return $(document).off("mousemove");
+-      });
+-      return $(document).mousemove(function(e) {
+-        var diffMousePosition, endInPixels, heightInPixels, startInPixels, widthInPixels;
+-        diffMousePosition = new Vector2(e.clientX, e.clientY).substract(initialMousePosition);
+-        endInPixels = new Vector2().copy(initialEnd).multiplyWithRect(canvasRect);
+-        startInPixels = new Vector2().copy(initialStart).multiplyWithRect(canvasRect);
+-        if (_this.operationOptions.ratio === 0) {
+-          _this.operationOptions.end.copy(endInPixels);
+-          _this.operationOptions.end.y += diffMousePosition.y;
+-          _this.operationOptions.end.clamp(new Vector2(endInPixels.x, startInPixels.y + 50), new Vector2(endInPixels.x, canvasRect.height - 1)).divideByRect(canvasRect);
+-          _this.operationOptions.start.copy(startInPixels);
+-          _this.operationOptions.start.x += diffMousePosition.x;
+-          _this.operationOptions.start.clamp(new Vector2(1, 1), new Vector2(endInPixels.x - 50, endInPixels.y - 50)).divideByRect(canvasRect);
+-        } else {
+-          startInPixels.x += (diffMousePosition.x - diffMousePosition.y) / 2;
+-          startInPixels.clamp(1, endInPixels.x - 50);
+-          widthInPixels = endInPixels.x - startInPixels.x;
+-          heightInPixels = widthInPixels / _this.operationOptions.ratio;
+-          if (startInPixels.y + heightInPixels > canvasRect.height - 1) {
+-            heightInPixels = (1 - _this.operationOptions.start.y) * canvasRect.height - 1;
+-            widthInPixels = heightInPixels * _this.operationOptions.ratio;
+-          }
+-          _this.operationOptions.start.x = (endInPixels.x - widthInPixels) / canvasRect.width;
+-          _this.operationOptions.end.y = (startInPixels.y + heightInPixels) / canvasRect.height;
+-        }
+-        return _this.resizeCanvasControls();
+-      });
+-    });
+-  };
+-
+-  /*
+-    Handles the dragging of the lower right knob
+-  */
+-
+-
+-  CropControl.prototype.handleBottomRightKnob = function() {
+-    var knob,
+-      _this = this;
+-    knob = this.knobs.br;
+-    return knob.mousedown(function(e) {
+-      var canvasRect, initialEnd, initialMousePosition, ratio;
+-      canvasRect = new Rect(0, 0, _this.canvasControlsContainer.width(), _this.canvasControlsContainer.height());
+-      initialMousePosition = new Vector2(e.clientX, e.clientY);
+-      initialEnd = new Vector2().copy(_this.operationOptions.end);
+-      ratio = _this.operationOptions.ratio;
+-      $(document).mouseup(function(e) {
+-        $(document).off("mouseup");
+-        return $(document).off("mousemove");
+-      });
+-      return $(document).mousemove(function(e) {
+-        var diffMousePosition, endInPixels, height, heightInPixels, startInPixels, width, widthInPixels, _ref;
+-        diffMousePosition = new Vector2(e.clientX, e.clientY).substract(initialMousePosition);
+-        endInPixels = new Vector2().copy(initialEnd).multiplyWithRect(canvasRect);
+-        startInPixels = new Vector2().copy(_this.operationOptions.start).multiplyWithRect(canvasRect);
+-        if (_this.operationOptions.ratio === 0) {
+-          _this.operationOptions.end.copy(endInPixels).add(diffMousePosition).clamp(new Vector2(startInPixels.x + 50, startInPixels.y + 50), new Vector2(canvasRect.width - 1, canvasRect.height - 1)).divideByRect(canvasRect);
+-          _ref = _this.app.ui.getCanvas().getImageData(), width = _ref.width, height = _ref.height;
+-          widthInPixels = endInPixels.x - startInPixels.x;
+-        } else {
+-          endInPixels.x += (diffMousePosition.x + diffMousePosition.y) / 2;
+-          endInPixels.clamp(startInPixels.x + 50, canvasRect.width - 1);
+-          widthInPixels = endInPixels.x - startInPixels.x;
+-          heightInPixels = widthInPixels / _this.operationOptions.ratio;
+-          if (startInPixels.y + heightInPixels > canvasRect.height - 1) {
+-            heightInPixels = (1 - _this.operationOptions.start.y) * canvasRect.height - 1;
+-            widthInPixels = heightInPixels * _this.operationOptions.ratio;
+-          }
+-          _this.operationOptions.end.copy(_this.operationOptions.start).multiplyWithRect(canvasRect).add(new Vector2(widthInPixels, heightInPixels)).divideByRect(canvasRect);
+-        }
+-        return _this.resizeCanvasControls();
+-      });
+-    });
+-  };
+-
+-  /*
+-    Handles the dragging of the upper left knob
+-  */
+-
+-
+-  CropControl.prototype.handleTopLeftKnob = function() {
+-    var knob,
+-      _this = this;
+-    knob = this.knobs.tl;
+-    return knob.mousedown(function(e) {
+-      var canvasRect, initialMousePosition, initialStart, ratio;
+-      canvasRect = new Rect(0, 0, _this.canvasControlsContainer.width(), _this.canvasControlsContainer.height());
+-      initialMousePosition = new Vector2(e.clientX, e.clientY);
+-      initialStart = new Vector2().copy(_this.operationOptions.start);
+-      ratio = _this.operationOptions.ratio;
+-      $(document).mouseup(function(e) {
+-        $(document).off("mouseup");
+-        return $(document).off("mousemove");
+-      });
+-      return $(document).mousemove(function(e) {
+-        var diffMousePosition, endInPixels, heightInPixels, startInPixels, widthInPixels;
+-        diffMousePosition = new Vector2(e.clientX, e.clientY).substract(initialMousePosition);
+-        if (_this.operationOptions.ratio === 0) {
+-          endInPixels = new Vector2().copy(_this.operationOptions.end).multiplyWithRect(canvasRect);
+-          _this.operationOptions.start.copy(initialStart).multiplyWithRect(canvasRect).add(diffMousePosition).clamp(new Vector2(1, 1), new Vector2(endInPixels.x - 50, endInPixels.y - 50)).divideByRect(canvasRect);
+-        } else {
+-          endInPixels = new Vector2().copy(_this.operationOptions.end).multiplyWithRect(canvasRect);
+-          startInPixels = new Vector2().copy(initialStart).multiplyWithRect(canvasRect);
+-          startInPixels.x += (diffMousePosition.x + diffMousePosition.y) / 2;
+-          startInPixels.clamp(1, endInPixels.x - 50);
+-          widthInPixels = endInPixels.x - startInPixels.x;
+-          heightInPixels = widthInPixels / _this.operationOptions.ratio;
+-          if (endInPixels.y - heightInPixels < 1) {
+-            heightInPixels = _this.operationOptions.end.y * canvasRect.height - 1;
+-            widthInPixels = heightInPixels * _this.operationOptions.ratio;
+-          }
+-          _this.operationOptions.start.copy(_this.operationOptions.end).multiplyWithRect(canvasRect).substract(new Vector2(widthInPixels, heightInPixels)).divideByRect(canvasRect);
+-        }
+-        return _this.resizeCanvasControls();
+-      });
+-    });
+-  };
+-
+-  /*
+-    Handles the dragging of the visible, cropped part
+-  */
+-
+-
+-  CropControl.prototype.handleCenterDragging = function() {
+-    var _this = this;
+-    return this.centerDiv.mousedown(function(e) {
+-      var canvasRect, centerRect, initialEnd, initialMousePosition, initialStart, max, min;
+-      canvasRect = new Rect(0, 0, _this.canvasControlsContainer.width(), _this.canvasControlsContainer.height());
+-      min = new Vector2(1, 1);
+-      max = new Vector2(canvasRect.width - _this.centerDiv.width() - 1, canvasRect.height - _this.centerDiv.height() - 1);
+-      initialMousePosition = new Vector2(e.clientX, e.clientY);
+-      initialStart = new Vector2().copy(_this.operationOptions.start);
+-      initialEnd = new Vector2().copy(_this.operationOptions.end);
+-      centerRect = new Rect(0, 0, _this.centerDiv.width(), _this.centerDiv.height());
+-      $(document).mouseup(function(e) {
+-        $(document).off("mouseup");
+-        return $(document).off("mousemove");
+-      });
+-      return $(document).mousemove(function(e) {
+-        var currentMousePosition, diffMousePosition;
+-        currentMousePosition = new Vector2(e.clientX, e.clientY);
+-        diffMousePosition = new Vector2().copy(currentMousePosition).substract(initialMousePosition);
+-        _this.operationOptions.start.copy(initialStart).multiplyWithRect(canvasRect).add(diffMousePosition).clamp(min, max).divideByRect(canvasRect);
+-        _this.operationOptions.end.copy(_this.operationOptions.start).multiplyWithRect(canvasRect).addRect(centerRect).divideByRect(canvasRect);
+-        return _this.resizeCanvasControls();
+-      });
+-    });
+-  };
+-
+-  CropControl.prototype.updateOperationOptions = function() {
+-    var canvasHeight, canvasWidth;
+-    canvasWidth = this.canvasControlsContainer.width();
+-    canvasHeight = this.canvasControlsContainer.height();
+-    this.operation.setStart(this.operationOptions.start.x / canvasWidth, this.operationOptions.start.y / canvasHeight);
+-    return this.operation.setEnd(this.operationOptions.end.x / canvasWidth, this.operationOptions.end.y / canvasHeight);
+-  };
+-
+-  CropControl.prototype.resizeCanvasControls = function() {
+-    var $el, bottomHeight, canvasRect, centerHeight, centerWidth, el, leftWidth, rightWidth, scaledEnd, scaledStart, topHeight, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _len5, _m, _n, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
+-    canvasRect = new Rect(0, 0, this.canvasControlsContainer.width(), this.canvasControlsContainer.height());
+-    scaledStart = new Vector2().copy(this.operationOptions.start).multiplyWithRect(canvasRect);
+-    scaledEnd = new Vector2().copy(this.operationOptions.end).multiplyWithRect(canvasRect);
+-    /*
+-      Set fragment widths
+-    */
+-
+-    leftWidth = scaledStart.x;
+-    _ref = ["tl", "lc", "bl"];
+-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+-      el = _ref[_i];
+-      $el = this.spotlightDivs[el];
+-      $el.css({
+-        width: leftWidth,
+-        left: 0
+-      });
+-      if (this.knobs[el] != null) {
+-        this.knobs[el].css({
+-          left: leftWidth
+-        });
+-      }
+-    }
+-    centerWidth = scaledEnd.x - scaledStart.x;
+-    _ref1 = ["tc", "bc"];
+-    for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+-      el = _ref1[_j];
+-      $el = this.spotlightDivs[el];
+-      $el.css({
+-        width: centerWidth,
+-        left: leftWidth
+-      });
+-    }
+-    rightWidth = canvasRect.width - centerWidth - leftWidth;
+-    _ref2 = ["tr", "rc", "br"];
+-    for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+-      el = _ref2[_k];
+-      $el = this.spotlightDivs[el];
+-      $el.css({
+-        width: rightWidth,
+-        left: leftWidth + centerWidth
+-      });
+-      if (this.knobs[el] != null) {
+-        this.knobs[el].css({
+-          left: leftWidth + centerWidth
+-        });
+-      }
+-    }
+-    /*
+-      Set fragment heights
+-    */
+-
+-    topHeight = scaledStart.y;
+-    _ref3 = ["tl", "tc", "tr"];
+-    for (_l = 0, _len3 = _ref3.length; _l < _len3; _l++) {
+-      el = _ref3[_l];
+-      $el = this.spotlightDivs[el];
+-      $el.css({
+-        height: topHeight,
+-        top: 0
+-      });
+-      if (this.knobs[el] != null) {
+-        this.knobs[el].css({
+-          top: topHeight
+-        });
+-      }
+-    }
+-    centerHeight = scaledEnd.y - scaledStart.y;
+-    _ref4 = ["lc", "rc"];
+-    for (_m = 0, _len4 = _ref4.length; _m < _len4; _m++) {
+-      el = _ref4[_m];
+-      $el = this.spotlightDivs[el];
+-      $el.css({
+-        height: centerHeight,
+-        top: topHeight
+-      });
+-    }
+-    bottomHeight = canvasRect.height - topHeight - centerHeight;
+-    _ref5 = ["bl", "bc", "br"];
+-    for (_n = 0, _len5 = _ref5.length; _n < _len5; _n++) {
+-      el = _ref5[_n];
+-      $el = this.spotlightDivs[el];
+-      $el.css({
+-        height: bottomHeight,
+-        top: topHeight + centerHeight
+-      });
+-      if (this.knobs[el] != null) {
+-        this.knobs[el].css({
+-          top: topHeight + centerHeight
+-        });
+-      }
+-    }
+-    /*
+-      Set center fragment dimensions and position
+-    */
+-
+-    return this.centerDiv.css({
+-      height: centerHeight,
+-      width: centerWidth,
+-      left: leftWidth,
+-      top: topHeight
+-    });
+-  };
+-
+-  return CropControl;
+-
+-})(ListControl);
+-
+-module.exports = CropControl;
+-
+-
+-},{"../../math/rect.coffee":18,"../../math/vector2.coffee":17,"../../operations/crop_operation.coffee":19,"./base/list_control.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],21:[function(require,module,exports){
+-/*
+-  ImglyKit
+-  Copyright (c) 2013-2014 img.ly
+-*/
+-
+-var ContrastFilter, Filter,
+-  __hasProp = {}.hasOwnProperty,
+-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+-
+-Filter = require("../filter.coffee");
+-
+-ContrastFilter = (function(_super) {
+-  __extends(ContrastFilter, _super);
+-
+-  function ContrastFilter(app, options) {
+-    this.app = app;
+-    if (options == null) {
+-      options = {};
+-    }
+-    ContrastFilter.__super__.constructor.apply(this, arguments);
+-    this.setContrast(options.contrast);
+-  }
+-
+-  ContrastFilter.prototype.apply = function(imageData) {
+-    var h, index, w, x, y, _i, _j;
+-    w = imageData.width;
+-    h = imageData.height;
+-    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
+-      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
+-        index = (w * y + x) * 4;
+-        if (this.contrast > 0) {
+-          imageData.data[index] = (imageData.data[index] - 128) / (1 - this.contrast) + 128;
+-          imageData.data[index + 1] = (imageData.data[index + 1] - 128) / (1 - this.contrast) + 128;
+-          imageData.data[index + 2] = (imageData.data[index + 2] - 128) / (1 - this.contrast) + 128;
+-          imageData.data[index + 3] = 255;
+-        } else {
+-          imageData.data[index] = (imageData.data[index] - 128) * (1 + this.contrast) + 128;
+-          imageData.data[index + 1] = (imageData.data[index + 1] - 128) * (1 + this.contrast) + 128;
+-          imageData.data[index + 2] = (imageData.data[index + 2] - 128) * (1 + this.contrast) + 128;
+-          imageData.data[index + 3] = 255;
+-        }
+-      }
+-    }
+-    return imageData;
+-  };
+-
+-  ContrastFilter.prototype.setContrast = function(contrast) {
+-    return this.contrast = typeof contrast === 'number' ? contrast : 1.0;
+-  };
+-
+-  return ContrastFilter;
+-
+-})(Filter);
+-
+-module.exports = ContrastFilter;
+-
+-
+-},{"../filter.coffee":9}],22:[function(require,module,exports){
+-/*
+-  ImglyKit
+-  Copyright (c) 2013-2014 img.ly
+-*/
+-
+-var Filter, ToneCurveFilter,
+-  __hasProp = {}.hasOwnProperty,
+-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+-
+-Filter = require("../filter.coffee");
+-
+-ToneCurveFilter = (function(_super) {
+-  __extends(ToneCurveFilter, _super);
+-
+-  function ToneCurveFilter(app, options) {
+-    var rgb;
+-    this.app = app;
+-    if (options == null) {
+-      options = {};
+-    }
+-    ToneCurveFilter.__super__.constructor.apply(this, arguments);
+-    if (this.rgbControlPoints || (options.rgbControlPoints != null)) {
+-      rgb = this.rgbControlPoints || options.rgbControlPoints;
+-      if (this.redControlPoints == null) {
+-        this.redControlPoints = rgb;
+-      }
+-      if (this.greenControlPoints == null) {
+-        this.greenControlPoints = rgb;
+-      }
+-      if (this.blueControlPoints == null) {
+-        this.blueControlPoints = rgb;
+-      }
+-    } else {
+-      if (this.redControlPoints == null) {
+-        this.redControlPoints = options.redControlPoints;
+-      }
+-      if (this.greenControlPoints == null) {
+-        this.greenControlPoints = options.greenControlPoints;
+-      }
+-      if (this.blueControlPoints == null) {
+-        this.blueControlPoints = options.blueControlPoints;
+-      }
+-    }
+-    if (this.redControlPoints && this.greenControlPoints && this.blueControlPoints) {
+-      this.updateToneCurveTexture();
+-    }
+-  }
+-
+-  ToneCurveFilter.prototype.render = function(context, w, h) {
+-    return context.putImageData(this.apply(context.getImageData(0, 0, w, h)), 0, 0);
+-  };
+-
+-  ToneCurveFilter.prototype.apply = function(imageData) {
+-    var h, index, w, x, y, _i, _j;
+-    w = imageData.width;
+-    h = imageData.height;
+-    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
+-      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
+-        index = (w * y + x) * 4;
+-        imageData.data[index] = imageData.data[index] + this.preparedRed[imageData.data[index]];
+-        imageData.data[index + 1] = imageData.data[index + 1] + this.preparedGreen[imageData.data[index + 1]];
+-        imageData.data[index + 2] = imageData.data[index + 2] + this.preparedBlue[imageData.data[index + 2]];
+-        imageData.data[index + 3] = 255;
+-      }
+-    }
+-    return imageData;
+-  };
+-
+-  ToneCurveFilter.prototype.updateToneCurveTexture = function() {
+-    this.preparedRed = this.getPreparedSplineCurve(this.redControlPoints);
+-    this.preparedBlue = this.getPreparedSplineCurve(this.blueControlPoints);
+-    return this.preparedGreen = this.getPreparedSplineCurve(this.greenControlPoints);
+-  };
+-
+-  ToneCurveFilter.prototype.getPreparedSplineCurve = function(points) {
+-    var convertedPoints, distance, firstSplinePoint, i, newPoint, origPoint, point, preparedSplinePoints, sortedPoints, splinePoints, _i, _j, _k, _len, _ref, _ref1;
+-    sortedPoints = points.sort(function(a, b) {
+-      var x1, x2;
+-      x1 = a[0];
+-      x2 = b[0];
+-      return x1 > x2;
+-    });
+-    convertedPoints = [];
+-    for (_i = 0, _len = points.length; _i < _len; _i++) {
+-      point = points[_i];
+-      newPoint = [point[0] * 255, point[1] * 255];
+-      convertedPoints.push(newPoint);
+-    }
+-    splinePoints = this.splineCurve(convertedPoints);
+-    firstSplinePoint = splinePoints[0];
+-    if (firstSplinePoint[0] > 0) {
+-      for (i = _j = 0, _ref = firstSplinePoint[0]; 0 <= _ref ? _j < _ref : _j > _ref; i = 0 <= _ref ? ++_j : --_j) {
+-        splinePoints.unshift([0, 0]);
+-      }
+-    }
+-    preparedSplinePoints = [];
+-    for (i = _k = 0, _ref1 = splinePoints.length; 0 <= _ref1 ? _k < _ref1 : _k > _ref1; i = 0 <= _ref1 ? ++_k : --_k) {
+-      newPoint = splinePoints[i];
+-      origPoint = [newPoint[0], newPoint[0]];
+-      distance = Math.sqrt(Math.pow(origPoint[0] - newPoint[0], 2) + Math.pow(origPoint[1] - newPoint[1], 2));
+-      if (origPoint[1] > newPoint[1]) {
+-        distance = -distance;
+-      }
+-      preparedSplinePoints.push(distance);
+-    }
+-    return preparedSplinePoints;
+-  };
+-
+-  ToneCurveFilter.prototype.splineCurve = function(points) {
+-    var a, b, cur, h, i, n, next, output, sd, sdA, t, x, y, _i, _j, _k, _ref, _ref1, _ref2;
+-    sdA = this.secondDerivative(points);
+-    n = sdA.length;
+-    sd = [];
+-    for (i = _i = 0; 0 <= n ? _i < n : _i > n; i = 0 <= n ? ++_i : --_i) {
+-      sd[i] = sdA[i];
+-    }
+-    output = [];
+-    for (i = _j = 0, _ref = n - 1; 0 <= _ref ? _j < _ref : _j > _ref; i = 0 <= _ref ? ++_j : --_j) {
+-      cur = points[i];
+-      next = points[i + 1];
+-      for (x = _k = _ref1 = cur[0], _ref2 = next[0]; _ref1 <= _ref2 ? _k < _ref2 : _k > _ref2; x = _ref1 <= _ref2 ? ++_k : --_k) {
+-        t = (x - cur[0]) / (next[0] - cur[0]);
+-        a = 1 - t;
+-        b = t;
+-        h = next[0] - cur[0];
+-        y = a * cur[1] + b * next[1] + (h * h / 6) * ((a * a * a - a) * sd[i] + (b * b * b - b) * sd[i + 1]);
+-        if (y > 255) {
+-          y = 255;
+-        } else if (y < 0) {
+-          y = 0;
+-        }
+-        output.push([x, y]);
+-      }
+-    }
+-    if (output.length === 255) {
+-      output.push(points.pop());
+-    }
+-    return output;
+-  };
+-
+-  ToneCurveFilter.prototype.secondDerivative = function(points) {
+-    var P1, P2, P3, i, k, matrix, n, result, y2, _i, _j, _k, _l, _ref, _ref1;
+-    n = points.length;
+-    if (n <= 0 || n === 1) {
+-      return null;
+-    }
+-    matrix = [];
+-    result = [];
+-    matrix[0] = [0, 1, 0];
+-    for (i = _i = 1, _ref = n - 1; 1 <= _ref ? _i < _ref : _i > _ref; i = 1 <= _ref ? ++_i : --_i) {
+-      P1 = points[i - 1];
+-      P2 = points[i];
+-      P3 = points[i + 1];
+-      if (matrix[i] == null) {
+-        matrix[i] = [];
+-      }
+-      matrix[i][0] = (P2[0] - P1[0]) / 6;
+-      matrix[i][1] = (P3[0] - P1[0]) / 3;
+-      matrix[i][2] = (P3[0] - P2[0]) / 6;
+-      result[i] = (P3[1] - P2[1]) / (P3[0] - P2[0]) - (P2[1] - P1[1]) / (P2[0] - P1[0]);
+-    }
+-    result[0] = 0;
+-    result[n - 1] = 0;
+-    matrix[n - 1] = [0, 1, 0];
+-    for (i = _j = 1; 1 <= n ? _j < n : _j > n; i = 1 <= n ? ++_j : --_j) {
+-      k = matrix[1][0] / matrix[i - 1][1];
+-      matrix[i][1] -= k * matrix[i - 1][2];
+-      matrix[i][0] = 0;
+-      result[i] -= k * result[i - 1];
+-    }
+-    for (i = _k = _ref1 = n - 2; _ref1 <= 0 ? _k < 0 : _k > 0; i = _ref1 <= 0 ? ++_k : --_k) {
+-      k = matrix[i][2] / matrix[i + 1][1];
+-      matrix[i][1] -= k * matrix[i + 1][0];
+-      matrix[i][2] = 0;
+-      result[i] -= k * result[i + 1];
+-    }
+-    y2 = [];
+-    for (i = _l = 0; 0 <= n ? _l < n : _l > n; i = 0 <= n ? ++_l : --_l) {
+-      y2[i] = result[i] / matrix[i][1];
+-    }
+-    return y2;
+-  };
+-
+-  ToneCurveFilter.prototype.setRedControlPoints = function(controlPoints) {
+-    return this.redControlPoints = controlPoints;
+-  };
+-
+-  ToneCurveFilter.prototype.setGreenControlPoints = function(controlPoints) {
+-    return this.greenControlPoints = controlPoints;
+-  };
+-
+-  ToneCurveFilter.prototype.setBlueControlPoints = function(controlPoints) {
+-    return this.blueControlPoints = controlPoints;
+-  };
+-
+-  return ToneCurveFilter;
+-
+-})(Filter);
+-
+-module.exports = ToneCurveFilter;
+-
+-
+-},{"../filter.coffee":9}],23:[function(require,module,exports){
+-/*
+-  ImglyKit
+-  Copyright (c) 2013-2014 img.ly
+-*/
+-
+-var BrightnessFilter, Filter,
+-  __hasProp = {}.hasOwnProperty,
+-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+-
+-Filter = require("../filter.coffee");
+-
+-BrightnessFilter = (function(_super) {
+-  __extends(BrightnessFilter, _super);
+-
+-  function BrightnessFilter(options) {
+-    if (options == null) {
+-      options = {};
+-    }
+-    BrightnessFilter.__super__.constructor.apply(this, arguments);
+-    this.setBrightness(options.brightness);
+-  }
+-
+-  BrightnessFilter.prototype.apply = function(imageData) {
+-    var h, index, w, x, y, _i, _j;
+-    w = imageData.width;
+-    h = imageData.height;
+-    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
+-      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
+-        index = (w * y + x) * 4;
+-        imageData.data[index] = Math.min(imageData.data[index] + this.brightness * 255, 255);
+-        imageData.data[index + 1] = Math.min(imageData.data[index + 1] + this.brightness * 255, 255);
+-        imageData.data[index + 2] = Math.min(imageData.data[index + 2] + this.brightness * 255, 255);
+-        imageData.data[index + 3] = 255;
+-      }
+-    }
+-    return imageData;
+-  };
+-
+-  BrightnessFilter.prototype.setBrightness = function(brightness) {
+-    return this.brightness = typeof brightness === 'number' ? brightness : 0.0;
+-  };
+-
+-  return BrightnessFilter;
+-
+-})(Filter);
+-
+-module.exports = BrightnessFilter;
+-
+-
+-},{"../filter.coffee":9}],24:[function(require,module,exports){
+-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/a15_filter.coffee",__dirname="/operations/filters";/*
+-  ImglyKit
+-  Copyright (c) 2013-2014 img.ly
+-*/
+-
+-var A15Filter, BrightnessFilter, ContrastFilter, Filter, ToneCurveFilter, _ref,
+-  __hasProp = {}.hasOwnProperty,
+-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+-
+-Filter = require("./filter.coffee");
+-
+-ContrastFilter = require("./primitives/contrast_filter.coffee");
+-
+-BrightnessFilter = require("./primitives/brightness_filter.coffee");
+-
+-ToneCurveFilter = require("./primitives/tone_curve_filter.coffee");
+-
+-A15Filter = (function(_super) {
+-  __extends(A15Filter, _super);
+-
+-  function A15Filter() {
+-    _ref = A15Filter.__super__.constructor.apply(this, arguments);
+-    return _ref;
+-  }
+-
+-  A15Filter.prototype.apply = (new ContrastFilter(A15Filter.app, {
+-    contrast: -0.37
+-  })).compose(BrightnessFilter, {
+-    brightness: 0.12
+-  }).compose(ToneCurveFilter, {
+-    redControlPoints: [[0, 38 / 255], [94 / 255, 94 / 255], [148 / 255, 142 / 255], [175 / 255, 187 / 255], [1, 1]],
+-    greenControlPoints: [[0, 0], [77 / 255, 53 / 255], [171 / 255, 190 / 255], [1, 1]],
+-    blueControlPoints: [[0, 10 / 255], [48 / 255, 85 / 255], [174 / 255, 228 / 255], [1, 1]]
+-  });
+-
+-  return A15Filter;
+-
+-})(Filter);
+-
+-module.exports = A15Filter;
+-
+-
+-},{"./filter.coffee":9,"./primitives/brightness_filter.coffee":23,"./primitives/contrast_filter.coffee":21,"./primitives/tone_curve_filter.coffee":22,"__browserify_Buffer":3,"__browserify_process":1}],25:[function(require,module,exports){
+-/*
+-  ImglyKit
+-  Copyright (c) 2013-2014 img.ly
+-*/
+-
+-var Filter, GrayscaleFilter, _ref,
+-  __hasProp = {}.hasOwnProperty,
+-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+-
+-Filter = require("../filter.coffee");
+-
+-GrayscaleFilter = (function(_super) {
+-  __extends(GrayscaleFilter, _super);
+-
+-  function GrayscaleFilter() {
+-    _ref = GrayscaleFilter.__super__.constructor.apply(this, arguments);
+-    return _ref;
+-  }
+-
+-  GrayscaleFilter.prototype.apply = function(imageData) {
+-    var h, index, luminance, w, x, y, _i, _j;
+-    w = imageData.width;
+-    h = imageData.height;
+-    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
+-      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
+-        index = (w * y + x) * 4;
+-        luminance = imageData.data[index] * 0.2125 + imageData.data[index + 1] * 0.7154 + imageData.data[index + 2] * 0.0721;
+-        imageData.data[index] = luminance;
+-        imageData.data[index + 1] = luminance;
+-        imageData.data[index + 2] = luminance;
+-        imageData.data[index + 3] = 255;
+-      }
+-    }
+-    return imageData;
+-  };
+-
+-  return GrayscaleFilter;
+-
+-})(Filter);
+-
+-module.exports = GrayscaleFilter;
+-
+-
+-},{"../filter.coffee":9}],26:[function(require,module,exports){
+-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/bw_filter.coffee",__dirname="/operations/filters";/*
+-  ImglyKit
+-  Copyright (c) 2013-2014 img.ly
+-*/
+-
+-var BWFilter, GrayscaleFilter, _ref,
+-  __hasProp = {}.hasOwnProperty,
+-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+-
+-GrayscaleFilter = require("./primitives/grayscale_filter.coffee");
+-
+-BWFilter = (function(_super) {
+-  __extends(BWFilter, _super);
+-
+-  function BWFilter() {
+-    _ref = BWFilter.__super__.constructor.apply(this, arguments);
+-    return _ref;
+-  }
+-
+-  return BWFilter;
+-
+-})(GrayscaleFilter);
+-
+-module.exports = BWFilter;
+-
+-
+-},{"./primitives/grayscale_filter.coffee":25,"__browserify_Buffer":3,"__browserify_process":1}],27:[function(require,module,exports){
+-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/bw_hard_filter.coffee",__dirname="/operations/filters";/*
+-  ImglyKit
+-  Copyright (c) 2013-2014 img.ly
+-*/
+-
+-var BWHardFilter, ContrastFilter, Filter, GrayscaleFilter, _ref,
+-  __hasProp = {}.hasOwnProperty,
+-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+-
+-Filter = require("./filter.coffee");
+-
+-GrayscaleFilter = require("./primitives/grayscale_filter.coffee");
+-
+-ContrastFilter = require("./primitives/contrast_filter.coffee");
+-
+-BWHardFilter = (function(_super) {
+-  __extends(BWHardFilter, _super);
+-
+-  function BWHardFilter() {
+-    _ref = BWHardFilter.__super__.constructor.apply(this, arguments);
+-    return _ref;
+-  }
+-
+-  BWHardFilter.prototype.apply = (new GrayscaleFilter).compose(ContrastFilter, {
+-    contrast: 0.5
+-  });
+-
+-  return BWHardFilter;
+-
+-})(Filter);
+-
+-module.exports = BWHardFilter;
+-
+-
+-},{"./filter.coffee":9,"./primitives/contrast_filter.coffee":21,"./primitives/grayscale_filter.coffee":25,"__browserify_Buffer":3,"__browserify_process":1}],28:[function(require,module,exports){
+-/*
+-  ImglyKit
+-  Copyright (c) 2013-2014 img.ly
+-*/
+-
+-var DesaturationFilter, Filter,
+-  __hasProp = {}.hasOwnProperty,
+-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+-
+-Filter = require("../filter.coffee");
+-
+-DesaturationFilter = (function(_super) {
+-  __extends(DesaturationFilter, _super);
+-
+-  function DesaturationFilter(app, options) {
+-    this.app = app;
+-    if (options == null) {
+-      options = {};
+-    }
+-    DesaturationFilter.__super__.constructor.apply(this, arguments);
+-    if (this.desaturation == null) {
+-      this.desaturation = options != null ? options.desaturation : void 0;
+-    }
+-  }
+-
+-  DesaturationFilter.prototype.apply = function(imageData) {
+-    var h, index, luminance, w, x, y, _i, _j;
+-    w = imageData.width;
+-    h = imageData.height;
+-    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
+-      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
+-        index = (w * y + x) * 4;
+-        luminance = imageData.data[index] * 0.3 + imageData.data[index + 1] * 0.59 + imageData.data[index + 2] * 0.11;
+-        imageData.data[index] = luminance * (1 - this.desaturation) + (imageData.data[index] * this.desaturation);
+-        imageData.data[index + 1] = luminance * (1 - this.desaturation) + (imageData.data[index + 1] * this.desaturation);
+-        imageData.data[index + 2] = luminance * (1 - this.desaturation) + (imageData.data[index + 2] * this.desaturation);
+-        imageData.data[index + 3] = 255;
+-      }
+-    }
+-    return imageData;
+-  };
+-
+-  return DesaturationFilter;
+-
+-})(Filter);
++})(Filter);
+ 
+ module.exports = DesaturationFilter;
+ 
+ 
+-},{"../filter.coffee":9}],29:[function(require,module,exports){
++},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],25:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/breeze_filter.coffee",__dirname="/operations/filters";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -6766,7 +5929,7 @@ BreezeFilter = (function(_super) {
+ module.exports = BreezeFilter;
+ 
+ 
+-},{"./filter.coffee":9,"./primitives/desaturation_filter.coffee":28,"./primitives/tone_curve_filter.coffee":22,"__browserify_Buffer":3,"__browserify_process":1}],30:[function(require,module,exports){
++},{"./filter.coffee":9,"./primitives/desaturation_filter.coffee":24,"./primitives/tone_curve_filter.coffee":19,"__browserify_Buffer":3,"__browserify_process":1}],26:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/celsius_filter.coffee",__dirname="/operations/filters";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -6799,7 +5962,7 @@ CelsiusFilter = (function(_super) {
+ module.exports = CelsiusFilter;
+ 
+ 
+-},{"./primitives/tone_curve_filter.coffee":22,"__browserify_Buffer":3,"__browserify_process":1}],31:[function(require,module,exports){
++},{"./primitives/tone_curve_filter.coffee":19,"__browserify_Buffer":3,"__browserify_process":1}],27:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/chest_filter.coffee",__dirname="/operations/filters";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -6832,34 +5995,7 @@ ChestFilter = (function(_super) {
+ module.exports = ChestFilter;
+ 
+ 
+-},{"./primitives/tone_curve_filter.coffee":22,"__browserify_Buffer":3,"__browserify_process":1}],32:[function(require,module,exports){
+-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/default_filter.coffee",__dirname="/operations/filters";/*
+-  ImglyKit
+-  Copyright (c) 2013-2014 img.ly
+-*/
+-
+-var DefaultFilter, IdentityFilter, _ref,
+-  __hasProp = {}.hasOwnProperty,
+-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+-
+-IdentityFilter = require("./primitives/identity_filter.coffee");
+-
+-DefaultFilter = (function(_super) {
+-  __extends(DefaultFilter, _super);
+-
+-  function DefaultFilter() {
+-    _ref = DefaultFilter.__super__.constructor.apply(this, arguments);
+-    return _ref;
+-  }
+-
+-  return DefaultFilter;
+-
+-})(IdentityFilter);
+-
+-module.exports = DefaultFilter;
+-
+-
+-},{"./primitives/identity_filter.coffee":10,"__browserify_Buffer":3,"__browserify_process":1}],33:[function(require,module,exports){
++},{"./primitives/tone_curve_filter.coffee":19,"__browserify_Buffer":3,"__browserify_process":1}],28:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/fixie_filter.coffee",__dirname="/operations/filters";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -6892,8 +6028,35 @@ FixieFilter = (function(_super) {
+ module.exports = FixieFilter;
+ 
+ 
+-},{"./primitives/tone_curve_filter.coffee":22,"__browserify_Buffer":3,"__browserify_process":1}],34:[function(require,module,exports){
+-/*
++},{"./primitives/tone_curve_filter.coffee":19,"__browserify_Buffer":3,"__browserify_process":1}],29:[function(require,module,exports){
++var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/default_filter.coffee",__dirname="/operations/filters";/*
++  ImglyKit
++  Copyright (c) 2013-2014 img.ly
++*/
++
++var DefaultFilter, IdentityFilter, _ref,
++  __hasProp = {}.hasOwnProperty,
++  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
++
++IdentityFilter = require("./primitives/identity_filter.coffee");
++
++DefaultFilter = (function(_super) {
++  __extends(DefaultFilter, _super);
++
++  function DefaultFilter() {
++    _ref = DefaultFilter.__super__.constructor.apply(this, arguments);
++    return _ref;
++  }
++
++  return DefaultFilter;
++
++})(IdentityFilter);
++
++module.exports = DefaultFilter;
++
++
++},{"./primitives/identity_filter.coffee":10,"__browserify_Buffer":3,"__browserify_process":1}],30:[function(require,module,exports){
++var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/saturation_filter.coffee",__dirname="/operations/filters/primitives";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+ */
+@@ -6946,7 +6109,7 @@ SaturationFilter = (function(_super) {
+ module.exports = SaturationFilter;
+ 
+ 
+-},{"../filter.coffee":9}],35:[function(require,module,exports){
++},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],31:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/food_filter.coffee",__dirname="/operations/filters";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -6983,7 +6146,7 @@ FoodFilter = (function(_super) {
+ module.exports = FoodFilter;
+ 
+ 
+-},{"./filter.coffee":9,"./primitives/contrast_filter.coffee":21,"./primitives/saturation_filter.coffee":34,"__browserify_Buffer":3,"__browserify_process":1}],36:[function(require,module,exports){
++},{"./filter.coffee":9,"./primitives/contrast_filter.coffee":17,"./primitives/saturation_filter.coffee":30,"__browserify_Buffer":3,"__browserify_process":1}],32:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/fridge_filter.coffee",__dirname="/operations/filters";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -7016,7 +6179,7 @@ FridgeFilter = (function(_super) {
+ module.exports = FridgeFilter;
+ 
+ 
+-},{"./primitives/tone_curve_filter.coffee":22,"__browserify_Buffer":3,"__browserify_process":1}],37:[function(require,module,exports){
++},{"./primitives/tone_curve_filter.coffee":19,"__browserify_Buffer":3,"__browserify_process":1}],33:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/front_filter.coffee",__dirname="/operations/filters";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -7049,7 +6212,7 @@ FrontFilter = (function(_super) {
+ module.exports = FrontFilter;
+ 
+ 
+-},{"./primitives/tone_curve_filter.coffee":22,"__browserify_Buffer":3,"__browserify_process":1}],38:[function(require,module,exports){
++},{"./primitives/tone_curve_filter.coffee":19,"__browserify_Buffer":3,"__browserify_process":1}],34:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/glam_filter.coffee",__dirname="/operations/filters";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -7090,8 +6253,8 @@ GlamFilter = (function(_super) {
+ module.exports = GlamFilter;
+ 
+ 
+-},{"./filter.coffee":9,"./primitives/contrast_filter.coffee":21,"./primitives/grayscale_filter.coffee":25,"./primitives/tone_curve_filter.coffee":22,"__browserify_Buffer":3,"__browserify_process":1}],39:[function(require,module,exports){
+-/*
++},{"./filter.coffee":9,"./primitives/contrast_filter.coffee":17,"./primitives/grayscale_filter.coffee":21,"./primitives/tone_curve_filter.coffee":19,"__browserify_Buffer":3,"__browserify_process":1}],35:[function(require,module,exports){
++var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/gobblin_filter.coffee",__dirname="/operations/filters/primitives";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+ */
+@@ -7134,7 +6297,7 @@ GobblinFilter = (function(_super) {
+ module.exports = GobblinFilter;
+ 
+ 
+-},{"../filter.coffee":9}],40:[function(require,module,exports){
++},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],36:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/gobblin_filter.coffee",__dirname="/operations/filters";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -7161,7 +6324,7 @@ GobblinFilter = (function(_super) {
+ module.exports = GobblinFilter;
+ 
+ 
+-},{"./primitives/gobblin_filter.coffee":39,"__browserify_Buffer":3,"__browserify_process":1}],41:[function(require,module,exports){
++},{"./primitives/gobblin_filter.coffee":35,"__browserify_Buffer":3,"__browserify_process":1}],37:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/k1_filter.coffee",__dirname="/operations/filters";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -7198,8 +6361,8 @@ K1Filter = (function(_super) {
+ module.exports = K1Filter;
+ 
+ 
+-},{"./filter.coffee":9,"./primitives/saturation_filter.coffee":34,"./primitives/tone_curve_filter.coffee":22,"__browserify_Buffer":3,"__browserify_process":1}],42:[function(require,module,exports){
+-/*
++},{"./filter.coffee":9,"./primitives/saturation_filter.coffee":30,"./primitives/tone_curve_filter.coffee":19,"__browserify_Buffer":3,"__browserify_process":1}],38:[function(require,module,exports){
++var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/soft_color_overlay_filter.coffee",__dirname="/operations/filters/primitives";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+ */
+@@ -7241,7 +6404,7 @@ SoftColorOverlayFilter = (function(_super) {
+ module.exports = SoftColorOverlayFilter;
+ 
+ 
+-},{"../filter.coffee":9}],43:[function(require,module,exports){
++},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],39:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/k2_filter.coffee",__dirname="/operations/filters";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -7280,7 +6443,7 @@ K2Filter = (function(_super) {
+ module.exports = K2Filter;
+ 
+ 
+-},{"./filter.coffee":9,"./primitives/soft_color_overlay_filter.coffee":42,"./primitives/tone_curve_filter.coffee":22,"__browserify_Buffer":3,"__browserify_process":1}],44:[function(require,module,exports){
++},{"./filter.coffee":9,"./primitives/soft_color_overlay_filter.coffee":38,"./primitives/tone_curve_filter.coffee":19,"__browserify_Buffer":3,"__browserify_process":1}],40:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/k6_filter.coffee",__dirname="/operations/filters";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -7309,7 +6472,7 @@ K6Filter = (function(_super) {
+ module.exports = K6Filter;
+ 
+ 
+-},{"./primitives/saturation_filter.coffee":34,"__browserify_Buffer":3,"__browserify_process":1}],45:[function(require,module,exports){
++},{"./primitives/saturation_filter.coffee":30,"__browserify_Buffer":3,"__browserify_process":1}],41:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/kdynamic_filter.coffee",__dirname="/operations/filters";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -7346,7 +6509,7 @@ KDynamicFilter = (function(_super) {
+ module.exports = KDynamicFilter;
+ 
+ 
+-},{"./filter.coffee":9,"./primitives/saturation_filter.coffee":34,"./primitives/tone_curve_filter.coffee":22,"__browserify_Buffer":3,"__browserify_process":1}],46:[function(require,module,exports){
++},{"./filter.coffee":9,"./primitives/saturation_filter.coffee":30,"./primitives/tone_curve_filter.coffee":19,"__browserify_Buffer":3,"__browserify_process":1}],42:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/lenin_filter.coffee",__dirname="/operations/filters";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -7385,7 +6548,7 @@ LeninFilter = (function(_super) {
+ module.exports = LeninFilter;
+ 
+ 
+-},{"./filter.coffee":9,"./primitives/desaturation_filter.coffee":28,"./primitives/tone_curve_filter.coffee":22,"__browserify_Buffer":3,"__browserify_process":1}],47:[function(require,module,exports){
++},{"./filter.coffee":9,"./primitives/desaturation_filter.coffee":24,"./primitives/tone_curve_filter.coffee":19,"__browserify_Buffer":3,"__browserify_process":1}],43:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/lomo_filter.coffee",__dirname="/operations/filters";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -7420,7 +6583,7 @@ LomoFilter = (function(_super) {
+ module.exports = LomoFilter;
+ 
+ 
+-},{"./primitives/tone_curve_filter.coffee":22,"__browserify_Buffer":3,"__browserify_process":1}],48:[function(require,module,exports){
++},{"./primitives/tone_curve_filter.coffee":19,"__browserify_Buffer":3,"__browserify_process":1}],44:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/mellow_filter.coffee",__dirname="/operations/filters";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -7453,8 +6616,8 @@ MellowFilter = (function(_super) {
+ module.exports = MellowFilter;
+ 
+ 
+-},{"./primitives/tone_curve_filter.coffee":22,"__browserify_Buffer":3,"__browserify_process":1}],49:[function(require,module,exports){
+-/*
++},{"./primitives/tone_curve_filter.coffee":19,"__browserify_Buffer":3,"__browserify_process":1}],45:[function(require,module,exports){
++var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/glow_filter.coffee",__dirname="/operations/filters/primitives";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+ */
+@@ -7511,7 +6674,7 @@ GlowFilter = (function(_super) {
+ module.exports = GlowFilter;
+ 
+ 
+-},{"../filter.coffee":9}],50:[function(require,module,exports){
++},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],46:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/morning_filter.coffee",__dirname="/operations/filters";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -7548,7 +6711,7 @@ MorningFilter = (function(_super) {
+ module.exports = MorningFilter;
+ 
+ 
+-},{"./filter.coffee":9,"./primitives/glow_filter.coffee":49,"./primitives/tone_curve_filter.coffee":22,"__browserify_Buffer":3,"__browserify_process":1}],51:[function(require,module,exports){
++},{"./filter.coffee":9,"./primitives/glow_filter.coffee":45,"./primitives/tone_curve_filter.coffee":19,"__browserify_Buffer":3,"__browserify_process":1}],47:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/orchid_filter.coffee",__dirname="/operations/filters";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -7589,8 +6752,8 @@ OrchidFilter = (function(_super) {
+ module.exports = OrchidFilter;
+ 
+ 
+-},{"./filter.coffee":9,"./primitives/desaturation_filter.coffee":28,"./primitives/tone_curve_filter.coffee":22,"__browserify_Buffer":3,"__browserify_process":1}],52:[function(require,module,exports){
+-/*
++},{"./filter.coffee":9,"./primitives/desaturation_filter.coffee":24,"./primitives/tone_curve_filter.coffee":19,"__browserify_Buffer":3,"__browserify_process":1}],48:[function(require,module,exports){
++var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/pola669_filter.coffee",__dirname="/operations/filters";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+ */
+@@ -7632,13 +6795,13 @@ Pola669Filter = (function(_super) {
+ module.exports = Pola669Filter;
+ 
+ 
+-},{"./filter.coffee":9,"./primitives/contrast_filter.coffee":21,"./primitives/saturation_filter.coffee":34,"./primitives/tone_curve_filter.coffee":22}],53:[function(require,module,exports){
+-/*
++},{"./filter.coffee":9,"./primitives/contrast_filter.coffee":17,"./primitives/saturation_filter.coffee":30,"./primitives/tone_curve_filter.coffee":19,"__browserify_Buffer":3,"__browserify_process":1}],49:[function(require,module,exports){
++var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/quozi_filter.coffee",__dirname="/operations/filters";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+ */
+ 
+-var ContrastFilter, Filter, PolaFilter, SaturationFilter, ToneCurveFilter, _ref,
++var DesaturationFilter, Filter, QuoziFilter, ToneCurveFilter, _ref,
+   __hasProp = {}.hasOwnProperty,
+   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+ 
+@@ -7646,42 +6809,38 @@ Filter = require("./filter.coffee");
+ 
+ ToneCurveFilter = require("./primitives/tone_curve_filter.coffee");
+ 
+-ContrastFilter = require("./primitives/contrast_filter.coffee");
+-
+-SaturationFilter = require("./primitives/saturation_filter.coffee");
++DesaturationFilter = require("./primitives/desaturation_filter.coffee");
+ 
+-PolaFilter = (function(_super) {
+-  __extends(PolaFilter, _super);
++QuoziFilter = (function(_super) {
++  __extends(QuoziFilter, _super);
+ 
+-  function PolaFilter() {
+-    _ref = PolaFilter.__super__.constructor.apply(this, arguments);
++  function QuoziFilter() {
++    _ref = QuoziFilter.__super__.constructor.apply(this, arguments);
+     return _ref;
+   }
+ 
+-  PolaFilter.prototype.apply = (new ToneCurveFilter(PolaFilter.app, {
+-    redControlPoints: [[0, 0], [94 / 255, 74 / 255], [181 / 255, 205 / 255], [1, 1]],
+-    greenControlPoints: [[0, 0], [34 / 255, 34 / 255], [99 / 255, 76 / 255], [176 / 255, 190 / 255], [1, 1]],
+-    blueControlPoints: [[0, 0], [102 / 255, 73 / 255], [227 / 255, 213 / 255], [1, 1]]
+-  })).compose(SaturationFilter, {
+-    saturation: -0.2
+-  }).compose(ContrastFilter, {
+-    contrast: 0.5
++  QuoziFilter.prototype.apply = (new DesaturationFilter(QuoziFilter.app, {
++    desaturation: 0.65
++  })).compose(ToneCurveFilter, {
++    redControlPoints: [[0, 50 / 255], [40 / 255, 78 / 255], [118 / 255, 170 / 255], [181 / 255, 211 / 255], [1, 1]],
++    greenControlPoints: [[0, 27 / 255], [28 / 255, 45 / 255], [109 / 255, 157 / 255], [157 / 255, 195 / 255], [179 / 255, 208 / 255], [206 / 255, 212 / 255], [1, 240 / 255]],
++    blueControlPoints: [[0, 50 / 255], [12 / 255, 55 / 255], [46 / 255, 103 / 255], [103 / 255, 162 / 255], [194 / 255, 182 / 255], [241 / 255, 201 / 255], [1, 219 / 255]]
+   });
+ 
+-  return PolaFilter;
++  return QuoziFilter;
+ 
+ })(Filter);
+ 
+-module.exports = PolaFilter;
++module.exports = QuoziFilter;
+ 
+ 
+-},{"./filter.coffee":9,"./primitives/contrast_filter.coffee":21,"./primitives/saturation_filter.coffee":34,"./primitives/tone_curve_filter.coffee":22}],54:[function(require,module,exports){
+-/*
++},{"./filter.coffee":9,"./primitives/desaturation_filter.coffee":24,"./primitives/tone_curve_filter.coffee":19,"__browserify_Buffer":3,"__browserify_process":1}],50:[function(require,module,exports){
++var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/pola_filter.coffee",__dirname="/operations/filters";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+ */
+ 
+-var DesaturationFilter, Filter, QuoziFilter, ToneCurveFilter, _ref,
++var ContrastFilter, Filter, PolaFilter, SaturationFilter, ToneCurveFilter, _ref,
+   __hasProp = {}.hasOwnProperty,
+   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+ 
+@@ -7689,33 +6848,37 @@ Filter = require("./filter.coffee");
+ 
+ ToneCurveFilter = require("./primitives/tone_curve_filter.coffee");
+ 
+-DesaturationFilter = require("./primitives/desaturation_filter.coffee");
++ContrastFilter = require("./primitives/contrast_filter.coffee");
+ 
+-QuoziFilter = (function(_super) {
+-  __extends(QuoziFilter, _super);
++SaturationFilter = require("./primitives/saturation_filter.coffee");
+ 
+-  function QuoziFilter() {
+-    _ref = QuoziFilter.__super__.constructor.apply(this, arguments);
++PolaFilter = (function(_super) {
++  __extends(PolaFilter, _super);
++
++  function PolaFilter() {
++    _ref = PolaFilter.__super__.constructor.apply(this, arguments);
+     return _ref;
+   }
+ 
+-  QuoziFilter.prototype.apply = (new DesaturationFilter(QuoziFilter.app, {
+-    desaturation: 0.65
+-  })).compose(ToneCurveFilter, {
+-    redControlPoints: [[0, 50 / 255], [40 / 255, 78 / 255], [118 / 255, 170 / 255], [181 / 255, 211 / 255], [1, 1]],
+-    greenControlPoints: [[0, 27 / 255], [28 / 255, 45 / 255], [109 / 255, 157 / 255], [157 / 255, 195 / 255], [179 / 255, 208 / 255], [206 / 255, 212 / 255], [1, 240 / 255]],
+-    blueControlPoints: [[0, 50 / 255], [12 / 255, 55 / 255], [46 / 255, 103 / 255], [103 / 255, 162 / 255], [194 / 255, 182 / 255], [241 / 255, 201 / 255], [1, 219 / 255]]
++  PolaFilter.prototype.apply = (new ToneCurveFilter(PolaFilter.app, {
++    redControlPoints: [[0, 0], [94 / 255, 74 / 255], [181 / 255, 205 / 255], [1, 1]],
++    greenControlPoints: [[0, 0], [34 / 255, 34 / 255], [99 / 255, 76 / 255], [176 / 255, 190 / 255], [1, 1]],
++    blueControlPoints: [[0, 0], [102 / 255, 73 / 255], [227 / 255, 213 / 255], [1, 1]]
++  })).compose(SaturationFilter, {
++    saturation: -0.2
++  }).compose(ContrastFilter, {
++    contrast: 0.5
+   });
+ 
+-  return QuoziFilter;
++  return PolaFilter;
+ 
+ })(Filter);
+ 
+-module.exports = QuoziFilter;
++module.exports = PolaFilter;
+ 
+ 
+-},{"./filter.coffee":9,"./primitives/desaturation_filter.coffee":28,"./primitives/tone_curve_filter.coffee":22}],55:[function(require,module,exports){
+-/*
++},{"./filter.coffee":9,"./primitives/contrast_filter.coffee":17,"./primitives/saturation_filter.coffee":30,"./primitives/tone_curve_filter.coffee":19,"__browserify_Buffer":3,"__browserify_process":1}],51:[function(require,module,exports){
++var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/semi_red_filter.coffee",__dirname="/operations/filters";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+ */
+@@ -7751,8 +6914,8 @@ SemiRedFilter = (function(_super) {
+ module.exports = SemiRedFilter;
+ 
+ 
+-},{"./filter.coffee":9,"./primitives/glow_filter.coffee":49,"./primitives/tone_curve_filter.coffee":22}],56:[function(require,module,exports){
+-/*
++},{"./filter.coffee":9,"./primitives/glow_filter.coffee":45,"./primitives/tone_curve_filter.coffee":19,"__browserify_Buffer":3,"__browserify_process":1}],52:[function(require,module,exports){
++var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/sunny_filter.coffee",__dirname="/operations/filters";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+ */
+@@ -7792,8 +6955,8 @@ SunnyFilter = (function(_super) {
+ module.exports = SunnyFilter;
+ 
+ 
+-},{"./filter.coffee":9,"./primitives/tone_curve_filter.coffee":22}],57:[function(require,module,exports){
+-/*
++},{"./filter.coffee":9,"./primitives/tone_curve_filter.coffee":19,"__browserify_Buffer":3,"__browserify_process":1}],53:[function(require,module,exports){
++var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/texas_filter.coffee",__dirname="/operations/filters";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+ */
+@@ -7825,35 +6988,8 @@ TexasFilter = (function(_super) {
+ module.exports = TexasFilter;
+ 
+ 
+-},{"./primitives/tone_curve_filter.coffee":22}],58:[function(require,module,exports){
+-/*
+-  ImglyKit
+-  Copyright (c) 2013-2014 img.ly
+-*/
+-
+-var X400Filter, X400FilterBase, _ref,
+-  __hasProp = {}.hasOwnProperty,
+-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+-
+-X400FilterBase = require("./primitives/x400_filter.coffee");
+-
+-X400Filter = (function(_super) {
+-  __extends(X400Filter, _super);
+-
+-  function X400Filter() {
+-    _ref = X400Filter.__super__.constructor.apply(this, arguments);
+-    return _ref;
+-  }
+-
+-  return X400Filter;
+-
+-})(X400FilterBase);
+-
+-module.exports = X400Filter;
+-
+-
+-},{"./primitives/x400_filter.coffee":59}],59:[function(require,module,exports){
+-/*
++},{"./primitives/tone_curve_filter.coffee":19,"__browserify_Buffer":3,"__browserify_process":1}],54:[function(require,module,exports){
++var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/x400_filter.coffee",__dirname="/operations/filters/primitives";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+ */
+@@ -7901,7 +7037,34 @@ X400Filter = (function(_super) {
+ module.exports = X400Filter;
+ 
+ 
+-},{"../filter.coffee":9}],60:[function(require,module,exports){
++},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],55:[function(require,module,exports){
++var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/x400_filter.coffee",__dirname="/operations/filters";/*
++  ImglyKit
++  Copyright (c) 2013-2014 img.ly
++*/
++
++var X400Filter, X400FilterBase, _ref,
++  __hasProp = {}.hasOwnProperty,
++  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
++
++X400FilterBase = require("./primitives/x400_filter.coffee");
++
++X400Filter = (function(_super) {
++  __extends(X400Filter, _super);
++
++  function X400Filter() {
++    _ref = X400Filter.__super__.constructor.apply(this, arguments);
++    return _ref;
++  }
++
++  return X400Filter;
++
++})(X400FilterBase);
++
++module.exports = X400Filter;
++
++
++},{"./primitives/x400_filter.coffee":54,"__browserify_Buffer":3,"__browserify_process":1}],56:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/filters_control.coffee",__dirname="/ui/controls";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -8167,15 +7330,187 @@ FiltersControl = (function(_super) {
+     ];
+   }
+ 
+-  return FiltersControl;
++  return FiltersControl;
++
++})(ListControl);
++
++module.exports = FiltersControl;
++
++
++},{"../../operations/filters/a15_filter.coffee":20,"../../operations/filters/breeze_filter.coffee":25,"../../operations/filters/bw_filter.coffee":22,"../../operations/filters/bw_hard_filter.coffee":23,"../../operations/filters/celsius_filter.coffee":26,"../../operations/filters/chest_filter.coffee":27,"../../operations/filters/default_filter.coffee":29,"../../operations/filters/fixie_filter.coffee":28,"../../operations/filters/food_filter.coffee":31,"../../operations/filters/fridge_filter.coffee":32,"../../operations/filters/front_filter.coffee":33,"../../operations/filters/glam_filter.coffee":34,"../../operations/filters/gobblin_filter.coffee":36,"../../operations/filters/k1_filter.coffee":37,"../../operations/filters/k2_filter.coffee":39,"../../operations/filters/k6_filter.coffee":40,"../../operations/filters/kdynamic_filter.coffee":41,"../../operations/filters/lenin_filter.coffee":42,"../../operations/filters/lomo_filter.coffee":43,"../../operations/filters/mellow_filter.coffee":44,"../../operations/filters/morning_filter.coffee":46,"../../operations/filters/orchid_filter.coffee":47,"../../operations/filters/pola669_filter.coffee":48,"../../operations/filters/pola_filter.coffee":50,"../../operations/filters/quozi_filter.coffee":49,"../../operations/filters/semi_red_filter.coffee":51,"../../operations/filters/sunny_filter.coffee":52,"../../operations/filters/texas_filter.coffee":53,"../../operations/filters/x400_filter.coffee":55,"../../utils.coffee":4,"./base/list_control.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],57:[function(require,module,exports){
++var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/math/vector2.coffee",__dirname="/math";/*
++  ImglyKit
++  Copyright (c) 2013-2014 img.ly
++*/
++
++var Vector2;
++
++Vector2 = (function() {
++  function Vector2(x, y) {
++    this.x = x;
++    this.y = y;
++    if (this.x == null) {
++      this.x = 0;
++    }
++    if (this.y == null) {
++      this.y = 0;
++    }
++  }
++
++  /*
++    @param {Integer} x
++    @param {Integer} y
++  */
+ 
+-})(ListControl);
+ 
+-module.exports = FiltersControl;
++  Vector2.prototype.set = function(x, y) {
++    this.x = x;
++    this.y = y;
++  };
+ 
++  /*
++    @returns {Vector2} A clone of this vector
++  */
+ 
+-},{"../../operations/filters/a15_filter.coffee":24,"../../operations/filters/breeze_filter.coffee":29,"../../operations/filters/bw_filter.coffee":26,"../../operations/filters/bw_hard_filter.coffee":27,"../../operations/filters/celsius_filter.coffee":30,"../../operations/filters/chest_filter.coffee":31,"../../operations/filters/default_filter.coffee":32,"../../operations/filters/fixie_filter.coffee":33,"../../operations/filters/food_filter.coffee":35,"../../operations/filters/fridge_filter.coffee":36,"../../operations/filters/front_filter.coffee":37,"../../operations/filters/glam_filter.coffee":38,"../../operations/filters/gobblin_filter.coffee":40,"../../operations/filters/k1_filter.coffee":41,"../../operations/filters/k2_filter.coffee":43,"../../operations/filters/k6_filter.coffee":44,"../../operations/filters/kdynamic_filter.coffee":45,"../../operations/filters/lenin_filter.coffee":46,"../../operations/filters/lomo_filter.coffee":47,"../../operations/filters/mellow_filter.coffee":48,"../../operations/filters/morning_filter.coffee":50,"../../operations/filters/orchid_filter.coffee":51,"../../operations/filters/pola669_filter.coffee":52,"../../operations/filters/pola_filter.coffee":53,"../../operations/filters/quozi_filter.coffee":54,"../../operations/filters/semi_red_filter.coffee":55,"../../operations/filters/sunny_filter.coffee":56,"../../operations/filters/texas_filter.coffee":57,"../../operations/filters/x400_filter.coffee":58,"../../utils.coffee":6,"./base/list_control.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],61:[function(require,module,exports){
+-/*
++
++  Vector2.prototype.clone = function() {
++    return new Vector2(this.x, this.y);
++  };
++
++  /*
++    @param {ImglyKit.Vector2} The vector we want to copy
++  */
++
++
++  Vector2.prototype.copy = function(other) {
++    this.x = other.x;
++    this.y = other.y;
++    return this;
++  };
++
++  /*
++    @param {Integer|Vector2} Minimum value
++    @param {Integer|Vector2} Maximum value
++  */
++
++
++  Vector2.prototype.clamp = function(minimum, maximum) {
++    if (!(minimum instanceof Vector2)) {
++      minimum = new Vector2(minimum, minimum);
++    }
++    if (!(maximum instanceof Vector2)) {
++      maximum = new Vector2(maximum, maximum);
++    }
++    this.x = Math.max(minimum.x, Math.min(maximum.x, this.x));
++    this.y = Math.max(minimum.y, Math.min(maximum.y, this.y));
++    return this;
++  };
++
++  /*
++    @param {Object|Rect} The object to multiply with. Must have `width` and `height`
++  */
++
++
++  Vector2.prototype.multiplyWithRect = function(multiplier) {
++    this.x *= multiplier.width;
++    this.y *= multiplier.height;
++    return this;
++  };
++
++  /*
++    @param {Integer|Vector2}
++  */
++
++
++  Vector2.prototype.divide = function(divisor) {
++    if (divisor instanceof Vector2) {
++      this.x /= divisor.x;
++      this.y /= divisor.y;
++    } else {
++      this.x /= divisor;
++      this.y /= divisor;
++    }
++    return this;
++  };
++
++  /*
++    @param {Object|Rect} The object to multiply with. Must have `width` and `height`
++  */
++
++
++  Vector2.prototype.divideByRect = function(divisor) {
++    this.x /= divisor.width;
++    this.y /= divisor.height;
++    return this;
++  };
++
++  /*
++    @param {Integer|Vector2}
++  */
++
++
++  Vector2.prototype.substract = function(subtrahend) {
++    if (subtrahend instanceof Vector2) {
++      this.x -= subtrahend.x;
++      this.y -= subtrahend.y;
++    } else {
++      this.x -= subtrahend;
++      this.y -= subtrahend;
++    }
++    return this;
++  };
++
++  /*
++    @param {Rect} The object to substract
++  */
++
++
++  Vector2.prototype.substractRect = function(subtrahend) {
++    this.x -= subtrahend.width;
++    this.y -= subtrahend.height;
++    return this;
++  };
++
++  /*
++    @param {Rect} The object to add
++  */
++
++
++  Vector2.prototype.addRect = function(addend) {
++    this.x += addend.width;
++    this.y += addend.height;
++    return this;
++  };
++
++  /*
++    @param {Integer|Vector2}
++  */
++
++
++  Vector2.prototype.add = function(addend) {
++    if (addend instanceof Vector2) {
++      this.x += addend.x;
++      this.y += addend.y;
++    } else {
++      this.x += addend;
++      this.y += addend;
++    }
++    return this;
++  };
++
++  Vector2.prototype.toString = function() {
++    return "Vector2({ x: " + this.x + ", y: " + this.y + " })";
++  };
++
++  return Vector2;
++
++})();
++
++module.exports = Vector2;
++
++
++},{"__browserify_Buffer":3,"__browserify_process":1}],58:[function(require,module,exports){
++var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/focus/focus.coffee",__dirname="/operations/focus";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+ */
+@@ -8432,8 +7767,8 @@ Focus = (function(_super) {
+ module.exports = Focus;
+ 
+ 
+-},{"../../utils.coffee":6,"../operation.coffee":8}],62:[function(require,module,exports){
+-/*
++},{"../../utils.coffee":4,"../operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],59:[function(require,module,exports){
++var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/focus/radial_focus.coffee",__dirname="/operations/focus";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+ */
+@@ -8518,8 +7853,8 @@ RadialFocus = (function(_super) {
+ module.exports = RadialFocus;
+ 
+ 
+-},{"../../math/vector2.coffee":17,"./focus.coffee":61}],63:[function(require,module,exports){
+-/*
++},{"../../math/vector2.coffee":57,"./focus.coffee":58,"__browserify_Buffer":3,"__browserify_process":1}],60:[function(require,module,exports){
++var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/focus/linear_focus.coffee",__dirname="/operations/focus";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+ */
+@@ -8608,7 +7943,7 @@ LinearFocus = (function(_super) {
+ module.exports = LinearFocus;
+ 
+ 
+-},{"../../math/vector2.coffee":17,"./focus.coffee":61}],64:[function(require,module,exports){
++},{"../../math/vector2.coffee":57,"./focus.coffee":58,"__browserify_Buffer":3,"__browserify_process":1}],61:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/focus_control.coffee",__dirname="/ui/controls";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -8904,48 +8239,137 @@ FocusControl = (function(_super) {
+   };
+ 
+   /*
+-    Renders the line indicators for the currently blurred area
++    Renders the line indicators for the currently blurred area
++  */
++
++
++  FocusControl.prototype.drawLinearControl = function() {
++    var controlPoint, controlPoint1, controlPoint2, controlPoints, diagonal, diff, line, lines, point, _i, _results;
++    controlPoint1 = new Vector2().copy(this.operationOptions.controlPoint1Position).multiplyWithRect(this.canvas);
++    controlPoint2 = new Vector2().copy(this.operationOptions.controlPoint2Position).multiplyWithRect(this.canvas);
++    controlPoints = [controlPoint1, controlPoint2];
++    diff = new Vector2().copy(controlPoint2).substract(controlPoint1);
++    diagonal = Math.sqrt(Math.pow(this.canvas.width, 2) + Math.pow(this.canvas.height, 2));
++    _results = [];
++    for (point = _i = 0; _i <= 1; point = ++_i) {
++      controlPoint = controlPoints[point];
++      lines = [["#FFFFFF", 2 * (window.devicePixelRatio || 1), 0], ["rgba(0, 0, 0, 0.35)", 2 * (window.devicePixelRatio || 1), 2], ["rgba(0, 0, 0, 0.35)", 2 * (window.devicePixelRatio || 1), -1]];
++      _results.push((function() {
++        var _j, _len, _results1;
++        _results1 = [];
++        for (_j = 0, _len = lines.length; _j < _len; _j++) {
++          line = lines[_j];
++          this.context.beginPath();
++          this.context.moveTo(controlPoint.x + diff.y * diagonal + line[2], controlPoint.y - diff.x * diagonal + line[2]);
++          this.context.lineTo(controlPoint.x - diff.y * diagonal + line[2], controlPoint.y + diff.x * diagonal + line[2]);
++          this.context.strokeStyle = line[0];
++          this.context.lineWidth = line[1];
++          this.context.stroke();
++          _results1.push(this.context.closePath());
++        }
++        return _results1;
++      }).call(this));
++    }
++    return _results;
++  };
++
++  return FocusControl;
++
++})(ListControl);
++
++module.exports = FocusControl;
++
++
++},{"../../math/vector2.coffee":57,"../../operations/focus/linear_focus.coffee":60,"../../operations/focus/radial_focus.coffee":59,"../../utils.coffee":4,"./base/list_control.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],62:[function(require,module,exports){
++var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/math/rect.coffee",__dirname="/math";/*
++  ImglyKit
++  Copyright (c) 2013-2014 img.ly
++*/
++
++var Rect;
++
++Rect = (function() {
++  function Rect(x, y, width, height) {
++    this.x = x;
++    this.y = y;
++    this.width = width;
++    this.height = height;
++    if (this.x == null) {
++      this.x = 0;
++    }
++    if (this.y == null) {
++      this.y = 0;
++    }
++    if (this.width == null) {
++      this.width = 0;
++    }
++    if (this.height == null) {
++      this.height = 0;
++    }
++  }
++
++  /*
++    @param {Integer} x
++    @param {Integer} y
++    @param {Integer} width
++    @param {Integer} height
++  */
++
++
++  Rect.prototype.set = function(x, y, width, height) {
++    this.x = x;
++    this.y = y;
++    this.width = width;
++    this.height = height;
++  };
++
++  /*
++    @param {Integer} x
++    @param {Integer} y
++  */
++
++
++  Rect.prototype.setPosition = function(x, y) {
++    this.x = x;
++    this.y = y;
++  };
++
++  /*
++    @param {Integer} width
++    @param {Integer} height
+   */
+ 
+ 
+-  FocusControl.prototype.drawLinearControl = function() {
+-    var controlPoint, controlPoint1, controlPoint2, controlPoints, diagonal, diff, line, lines, point, _i, _results;
+-    controlPoint1 = new Vector2().copy(this.operationOptions.controlPoint1Position).multiplyWithRect(this.canvas);
+-    controlPoint2 = new Vector2().copy(this.operationOptions.controlPoint2Position).multiplyWithRect(this.canvas);
+-    controlPoints = [controlPoint1, controlPoint2];
+-    diff = new Vector2().copy(controlPoint2).substract(controlPoint1);
+-    diagonal = Math.sqrt(Math.pow(this.canvas.width, 2) + Math.pow(this.canvas.height, 2));
+-    _results = [];
+-    for (point = _i = 0; _i <= 1; point = ++_i) {
+-      controlPoint = controlPoints[point];
+-      lines = [["#FFFFFF", 2 * (window.devicePixelRatio || 1), 0], ["rgba(0, 0, 0, 0.35)", 2 * (window.devicePixelRatio || 1), 2], ["rgba(0, 0, 0, 0.35)", 2 * (window.devicePixelRatio || 1), -1]];
+-      _results.push((function() {
+-        var _j, _len, _results1;
+-        _results1 = [];
+-        for (_j = 0, _len = lines.length; _j < _len; _j++) {
+-          line = lines[_j];
+-          this.context.beginPath();
+-          this.context.moveTo(controlPoint.x + diff.y * diagonal + line[2], controlPoint.y - diff.x * diagonal + line[2]);
+-          this.context.lineTo(controlPoint.x - diff.y * diagonal + line[2], controlPoint.y + diff.x * diagonal + line[2]);
+-          this.context.strokeStyle = line[0];
+-          this.context.lineWidth = line[1];
+-          this.context.stroke();
+-          _results1.push(this.context.closePath());
+-        }
+-        return _results1;
+-      }).call(this));
+-    }
+-    return _results;
++  Rect.prototype.setDimensions = function(width, height) {
++    this.width = width;
++    this.height = height;
+   };
+ 
+-  return FocusControl;
++  /*
++    @param {ImglyKit.Rect} The vector we want to copy
++  */
+ 
+-})(ListControl);
+ 
+-module.exports = FocusControl;
++  Rect.prototype.copy = function(other) {
++    this.x = other.x;
++    this.y = other.y;
++    this.width = other.width;
++    this.height = other.height;
++    return this;
++  };
++
++  Rect.prototype.toString = function() {
++    return "Rect({ x: " + this.x + ", y: " + this.y + ", width: " + this.width + ", height: " + this.height + " })";
++  };
++
++  return Rect;
++
++})();
++
++module.exports = Rect;
+ 
+ 
+-},{"../../math/vector2.coffee":17,"../../operations/focus/linear_focus.coffee":63,"../../operations/focus/radial_focus.coffee":62,"../../utils.coffee":6,"./base/list_control.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],65:[function(require,module,exports){
++},{"__browserify_Buffer":3,"__browserify_process":1}],63:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/frames_operation.coffee",__dirname="/operations";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -9123,7 +8547,7 @@ FramesOperation = (function(_super) {
+ module.exports = FramesOperation;
+ 
+ 
+-},{"../math/rect.coffee":18,"../math/vector2.coffee":17,"../utils.coffee":6,"../vendor/queue.coffee":5,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],66:[function(require,module,exports){
++},{"../math/rect.coffee":62,"../math/vector2.coffee":57,"../utils.coffee":4,"../vendor/queue.coffee":6,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],64:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/frames_control.coffee",__dirname="/ui/controls";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -9201,7 +8625,7 @@ FramesControl = (function(_super) {
+ module.exports = FramesControl;
+ 
+ 
+-},{"../../math/rect.coffee":18,"../../math/vector2.coffee":17,"../../operations/frames_operation.coffee":65,"../../utils.coffee":6,"./base/list_control.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],67:[function(require,module,exports){
++},{"../../math/rect.coffee":62,"../../math/vector2.coffee":57,"../../operations/frames_operation.coffee":63,"../../utils.coffee":4,"./base/list_control.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],65:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/orientation_operation.coffee",__dirname="/operations";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -9356,7 +8780,7 @@ OrientationOperation = (function(_super) {
+ module.exports = OrientationOperation;
+ 
+ 
+-},{"../utils.coffee":6,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],68:[function(require,module,exports){
++},{"../utils.coffee":4,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],66:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/orientation_control.coffee",__dirname="/ui/controls";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -9420,7 +8844,7 @@ OrientationControl = (function(_super) {
+ module.exports = OrientationControl;
+ 
+ 
+-},{"../../operations/orientation_operation.coffee":67,"./base/list_control.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],69:[function(require,module,exports){
++},{"../../operations/orientation_operation.coffee":65,"./base/list_control.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],67:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/saturation_control.coffee",__dirname="/ui/controls";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -9453,7 +8877,7 @@ SaturationControl = (function(_super) {
+ module.exports = SaturationControl;
+ 
+ 
+-},{"./base/slider_control.coffee":14,"__browserify_Buffer":3,"__browserify_process":1}],70:[function(require,module,exports){
++},{"./base/slider_control.coffee":14,"__browserify_Buffer":3,"__browserify_process":1}],68:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/draw_image_operation.coffee",__dirname="/operations";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -9519,7 +8943,7 @@ module.exports = DrawImageOperation = (function(_super) {
+ })(Operation);
+ 
+ 
+-},{"../math/rect.coffee":18,"../math/vector2.coffee":17,"../utils.coffee":6,"../vendor/queue.coffee":5,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],71:[function(require,module,exports){
++},{"../math/rect.coffee":62,"../math/vector2.coffee":57,"../utils.coffee":4,"../vendor/queue.coffee":6,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],69:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/stickers_control.coffee",__dirname="/ui/controls";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -9819,8 +9243,98 @@ StickersControl = (function(_super) {
+ module.exports = StickersControl;
+ 
+ 
+-},{"../../math/rect.coffee":18,"../../math/vector2.coffee":17,"../../operations/draw_image_operation.coffee":70,"./base/list_control.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],72:[function(require,module,exports){
+-/*
++},{"../../math/rect.coffee":62,"../../math/vector2.coffee":57,"../../operations/draw_image_operation.coffee":68,"./base/list_control.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],70:[function(require,module,exports){
++var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/text_operation.coffee",__dirname="/operations";/*
++  ImglyKit
++  Copyright (c) 2013-2014 img.ly
++*/
++
++var Operation, Rect, TextOperation, Utils, Vector2,
++  __hasProp = {}.hasOwnProperty,
++  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
++
++Operation = require("./operation.coffee");
++
++Utils = require("../utils.coffee");
++
++Vector2 = require("../math/vector2.coffee");
++
++Rect = require("../math/rect.coffee");
++
++TextOperation = (function(_super) {
++  __extends(TextOperation, _super);
++
++  TextOperation.prototype.renderPreview = false;
++
++  function TextOperation(app, options) {
++    var _base, _base1, _base2, _base3, _base4, _base5, _base6, _base7, _base8;
++    this.app = app;
++    this.options = options != null ? options : {};
++    TextOperation.__super__.constructor.apply(this, arguments);
++    (_base = this.options).start || (_base.start = new Vector2(0.2, 0.2));
++    (_base1 = this.options).width || (_base1.width = 300);
++    (_base2 = this.options).text || (_base2.text = "Text");
++    (_base3 = this.options).color || (_base3.color = "rgba(255, 255, 255, 1.0)");
++    (_base4 = this.options).backgroundColor || (_base4.backgroundColor = "rgba(0, 0, 0, 0.5)");
++    (_base5 = this.options).fontSize || (_base5.fontSize = 0.1);
++    (_base6 = this.options).lineHeight || (_base6.lineHeight = 1.1);
++    (_base7 = this.options).paddingLeft || (_base7.paddingLeft = 0);
++    (_base8 = this.options).paddingTop || (_base8.paddingTop = 0);
++  }
++
++  /*
++    @param {String} font
++  */
++
++
++  TextOperation.prototype.setFont = function(font) {
++    this.options.font = font;
++    return this.emit("updateOptions", this.options);
++  };
++
++  TextOperation.prototype.apply = function(imageData) {
++    var boundingBoxHeight, boundingBoxWidth, canvas, context, line, lineHeight, lineNum, lineOffset, lineWidth, padding, paddingVector, scaledFontSize, scaledStart, _i, _j, _len, _len1, _ref, _ref1;
++    scaledFontSize = this.options.fontSize * imageData.height;
++    paddingVector = new Vector2(this.options.paddingLeft, this.options.paddingTop);
++    scaledStart = new Vector2().copy(this.options.start).add(paddingVector).multiplyWithRect(imageData);
++    canvas = Utils.newCanvasFromImageData(imageData);
++    context = canvas.getContext("2d");
++    context.font = "normal " + scaledFontSize + "px " + this.options.font;
++    context.textBaseline = "hanging";
++    lineHeight = this.options.lineHeight;
++    boundingBoxWidth = 0;
++    boundingBoxHeight = 0;
++    _ref = this.options.text.split("\n");
++    for (lineNum = _i = 0, _len = _ref.length; _i < _len; lineNum = ++_i) {
++      line = _ref[lineNum];
++      lineWidth = context.measureText(line).width;
++      if (lineWidth > boundingBoxWidth) {
++        boundingBoxWidth = lineWidth;
++      }
++      boundingBoxHeight += scaledFontSize * lineHeight;
++    }
++    context.fillStyle = this.options.backgroundColor;
++    padding = 10;
++    context.fillRect(scaledStart.x - padding, scaledStart.y - padding, boundingBoxWidth + padding * 2, boundingBoxHeight + padding);
++    context.fillStyle = this.options.color;
++    _ref1 = this.options.text.split("\n");
++    for (lineNum = _j = 0, _len1 = _ref1.length; _j < _len1; lineNum = ++_j) {
++      line = _ref1[lineNum];
++      lineOffset = lineNum * scaledFontSize * lineHeight;
++      context.fillText(line, scaledStart.x, scaledStart.y + this.options.paddingLeft + lineOffset);
++    }
++    return context.getImageData(0, 0, imageData.width, imageData.height);
++  };
++
++  return TextOperation;
++
++})(Operation);
++
++module.exports = TextOperation;
++
++
++},{"../math/rect.coffee":62,"../math/vector2.coffee":57,"../utils.coffee":4,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],71:[function(require,module,exports){
++var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/text_control.coffee",__dirname="/ui/controls";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+ */
+@@ -10182,7 +9696,7 @@ TextControl = (function(_super) {
+ module.exports = TextControl;
+ 
+ 
+-},{"../../math/rect.coffee":18,"../../math/vector2.coffee":17,"../../operations/text_operation.coffee":73,"./base/list_control.coffee":13}],74:[function(require,module,exports){
++},{"../../math/rect.coffee":62,"../../math/vector2.coffee":57,"../../operations/text_operation.coffee":70,"./base/list_control.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],72:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/brightness_operation.coffee",__dirname="/operations";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -10239,7 +9753,7 @@ BrightnessOperation = (function(_super) {
+ module.exports = BrightnessOperation;
+ 
+ 
+-},{"./filters/filter.coffee":9,"./filters/primitives/brightness_filter.coffee":23,"__browserify_Buffer":3,"__browserify_process":1}],75:[function(require,module,exports){
++},{"./filters/filter.coffee":9,"./filters/primitives/brightness_filter.coffee":18,"__browserify_Buffer":3,"__browserify_process":1}],73:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/contrast_operation.coffee",__dirname="/operations";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -10296,7 +9810,117 @@ ContrastOperation = (function(_super) {
+ module.exports = ContrastOperation;
+ 
+ 
+-},{"./filters/filter.coffee":9,"./filters/primitives/contrast_filter.coffee":21,"__browserify_Buffer":3,"__browserify_process":1}],76:[function(require,module,exports){
++},{"./filters/filter.coffee":9,"./filters/primitives/contrast_filter.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],74:[function(require,module,exports){
++/*
++  ImglyKit
++  Copyright (c) 2013-2014 img.ly
++*/
++
++var CropOperation, Operation, Utils, Vector2,
++  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
++  __hasProp = {}.hasOwnProperty,
++  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
++
++Operation = require("./operation.coffee");
++
++Utils = require("../utils.coffee");
++
++Vector2 = require("../math/vector2.coffee");
++
++CropOperation = (function(_super) {
++  __extends(CropOperation, _super);
++
++  CropOperation.prototype.renderPreview = false;
++
++  function CropOperation(app, options) {
++    var _base, _base1, _base2;
++    this.app = app;
++    this.options = options != null ? options : {};
++    this.setRatio = __bind(this.setRatio, this);
++    CropOperation.__super__.constructor.apply(this, arguments);
++    if ((_base = this.options).start == null) {
++      _base.start = new Vector2(0.1, 0.1);
++    }
++    if ((_base1 = this.options).end == null) {
++      _base1.end = new Vector2(0.9, 0.9);
++    }
++    if ((_base2 = this.options).ratio == null) {
++      _base2.ratio = 4 / 3;
++    }
++  }
++
++  CropOperation.prototype.setRatio = function(ratio) {
++    this.options.ratio = ratio;
++    return this.setSize("custom");
++  };
++
++  CropOperation.prototype.setSize = function(size) {
++    var h, height, w, width, _ref;
++    _ref = this.app.ui.getCanvas().getImageData(), width = _ref.width, height = _ref.height;
++    this.options.size = size;
++    this.options.start.set(0.1, 0.1);
++    this.options.end.set(0.9, 0.9);
++    switch (size) {
++      case "square":
++        this.options.ratio = 1;
++        break;
++      case "4:3":
++        this.options.ratio = 4 / 3;
++        break;
++      case "16:9":
++        this.options.ratio = 16 / 9;
++        break;
++      case "free":
++        this.options.ratio = 0;
++    }
++    if (this.options.ratio) {
++      if (width / height <= this.options.ratio) {
++        this.options.start.x = 0.1;
++        this.options.end.x = 0.9;
++        h = 1 / height * (width / this.options.ratio * 0.8);
++        this.options.start.y = (1 - h) / 2;
++        this.options.end.y = 1 - this.options.start.y;
++      } else {
++        this.options.start.y = 0.1;
++        this.options.end.y = 0.9;
++        w = 1 / width * (this.options.ratio * height * 0.8);
++        this.options.start.x = (1 - w) / 2;
++        this.options.end.x = 1 - this.options.start.x;
++      }
++    }
++    return this.emit("updateOptions", this.options);
++  };
++
++  CropOperation.prototype.setStart = function(x, y) {
++    this.options.start.x = x;
++    return this.options.start.y = y;
++  };
++
++  CropOperation.prototype.setEnd = function(x, y) {
++    this.options.end.x = x;
++    return this.options.end.y = y;
++  };
++
++  CropOperation.prototype.apply = function(imageData) {
++    var canvas, context, h, height, w, width, x, y;
++    width = imageData.width, height = imageData.height;
++    canvas = Utils.newCanvasFromImageData(imageData);
++    context = canvas.getContext("2d");
++    x = width * this.options.start.x;
++    y = height * this.options.start.y;
++    w = width * (this.options.end.x - this.options.start.x);
++    h = height * (this.options.end.y - this.options.start.y);
++    return context.getImageData(x, y, w, h);
++  };
++
++  return CropOperation;
++
++})(Operation);
++
++module.exports = CropOperation;
++
++
++},{"../math/vector2.coffee":57,"../utils.coffee":4,"./operation.coffee":8}],75:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/saturation_operation.coffee",__dirname="/operations";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -10353,7 +9977,7 @@ SaturationOperation = (function(_super) {
+ module.exports = SaturationOperation;
+ 
+ 
+-},{"./filters/filter.coffee":9,"./filters/primitives/saturation_filter.coffee":34,"__browserify_Buffer":3,"__browserify_process":1}],77:[function(require,module,exports){
++},{"./filters/filter.coffee":9,"./filters/primitives/saturation_filter.coffee":30,"__browserify_Buffer":3,"__browserify_process":1}],76:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/main_menu_control.coffee",__dirname="/ui/controls";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -10482,7 +10106,7 @@ MainMenuControl = (function(_super) {
+ module.exports = MainMenuControl;
+ 
+ 
+-},{"../../operations/brightness_operation.coffee":74,"../../operations/contrast_operation.coffee":75,"../../operations/crop_operation.coffee":19,"../../operations/frames_operation.coffee":65,"../../operations/saturation_operation.coffee":76,"../../operations/text_operation.coffee":73,"./base/list_control.coffee":13,"./brightness_control.coffee":15,"./contrast_control.coffee":16,"./crop_control.coffee":20,"./filters_control.coffee":60,"./focus_control.coffee":64,"./frames_control.coffee":66,"./orientation_control.coffee":68,"./saturation_control.coffee":69,"./stickers_control.coffee":71,"./text_control.coffee":72,"__browserify_Buffer":3,"__browserify_process":1}],78:[function(require,module,exports){
++},{"../../operations/brightness_operation.coffee":72,"../../operations/contrast_operation.coffee":73,"../../operations/crop_operation.coffee":74,"../../operations/frames_operation.coffee":63,"../../operations/saturation_operation.coffee":75,"../../operations/text_operation.coffee":70,"./base/list_control.coffee":13,"./brightness_control.coffee":15,"./contrast_control.coffee":16,"./crop_control.coffee":77,"./filters_control.coffee":56,"./focus_control.coffee":61,"./frames_control.coffee":64,"./orientation_control.coffee":66,"./saturation_control.coffee":67,"./stickers_control.coffee":69,"./text_control.coffee":71,"__browserify_Buffer":3,"__browserify_process":1}],78:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls.coffee",__dirname="/ui";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -10641,7 +10265,7 @@ Controls = (function(_super) {
+ module.exports = Controls;
+ 
+ 
+-},{"./controls/main_menu_control.coffee":77,"__browserify_Buffer":3,"__browserify_process":1,"events":7}],79:[function(require,module,exports){
++},{"./controls/main_menu_control.coffee":76,"__browserify_Buffer":3,"__browserify_process":1,"events":7}],79:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/canvas.coffee",__dirname="/ui";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -10819,7 +10443,7 @@ Canvas = (function() {
+ module.exports = Canvas;
+ 
+ 
+-},{"../utils.coffee":6,"__browserify_Buffer":3,"__browserify_process":1}],80:[function(require,module,exports){
++},{"../utils.coffee":4,"__browserify_Buffer":3,"__browserify_process":1}],80:[function(require,module,exports){
+ var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/ui.coffee",__dirname="/ui";/*
+   ImglyKit
+   Copyright (c) 2013-2014 img.ly
+@@ -10995,257 +10619,623 @@ ImglyKit = (function() {
+   */
+ 
+ 
+-  ImglyKit.prototype.getHeight = function() {
+-    return this.options.container.height();
++  ImglyKit.prototype.getHeight = function() {
++    return this.options.container.height();
++  };
++
++  /*
++    @returns {ImglyKit.PhotoProcessor}
++  */
++
++
++  ImglyKit.prototype.getPhotoProcessor = function() {
++    return this.photoProcessor;
++  };
++
++  /*
++    @param {String} file path
++    @returns {String} assets file path
++  */
++
++
++  ImglyKit.prototype.buildAssetsPath = function(path) {
++    return this.options.assetsPath + "/" + path;
++  };
++
++  /*
++    @param {Image|String} image Data URL or Image object
++  */
++
++
++  ImglyKit.prototype.run = function(image) {
++    var dataUrl, error,
++      _this = this;
++    this.image = image;
++    this.checkSupport();
++    if (this.options.ratio != null) {
++      this.options.initialControls = require("./ui/controls/crop_control.coffee");
++      this.options.forceInitialControls = true;
++      this.options.operationOptionsHook = function(operation) {
++        return operation.setRatio(_this.options.ratio);
++      };
++    }
++    if (!(typeof this.image === "string" || this.image instanceof Image)) {
++      throw new Error("First parameter needs to be a String or an Image");
++    }
++    if (typeof this.image === "string") {
++      if (this.image.slice(0, 10) !== "data:image") {
++        error = new Error("First parameter is a string, but not an image data URL");
++        error.name = "InvalidError";
++        throw error;
++      }
++      dataUrl = this.image;
++      this.image = new Image();
++      this.image.src = dataUrl;
++    }
++    if (this.image.width > 0 && this.image.height > 0) {
++      return this.onImageLoaded();
++    } else {
++      return this.image.onload = this.onImageLoaded;
++    }
++  };
++
++  /*
++    Gets called as soon as the image has been loaded
++    and the image dimensions are available
++  */
++
++
++  ImglyKit.prototype.onImageLoaded = function() {
++    /*
++      Set up the user interface
++    */
++
++    var _this = this;
++    if (!this.ui.initialized) {
++      this.ui.init();
++      this.photoProcessor.setCanvas(this.ui.getCanvas());
++      this.ui.on("preview_operation", function(operation) {
++        var _ref;
++        if ((_ref = _this.ui.getCurrentControls()) != null) {
++          _ref.setOperation(operation);
++        }
++        return _this.photoProcessor.setPreviewOperation(operation);
++      });
++      this.ui.on("back", function() {
++        _this.photoProcessor.unsetPreviewOperation();
++        return _this.ui.resetControls();
++      });
++      this.ui.on("done", function() {
++        _this.photoProcessor.acceptPreviewOperation();
++        return _this.ui.resetControls();
++      });
++    } else {
++      this.photoProcessor.reset();
++      this.ui.resetControls();
++    }
++    /*
++      Reset everything
++    */
++
++    this.reset();
++    /*
++      Set source image of the photo processor and tell
++      it to render it
++    */
++
++    this.photoProcessor.setSourceImage(this.image);
++    return this.photoProcessor.renderPreview(function(err) {
++      /*
++        Do we have controls that have to be shown
++        on startup?
++      */
++
++      var controls;
++      if (_this.options.initialControls) {
++        controls = _this.ui.controls;
++        controls.switchToControls(_this.options.initialControls, controls.getCurrentControls(), {
++          backButton: !_this.options.forceInitialControls,
++          showList: !_this.options.forceInitialControls
++        });
++        if (_this.options.operationOptionsHook != null) {
++          return _this.options.operationOptionsHook(controls.getCurrentControls().operation);
++        }
++      }
++    });
++  };
++
++  /*
++    Resets everything
++  */
++
++
++  ImglyKit.prototype.reset = function() {
++    return this.photoProcessor.reset();
++  };
++
++  /*
++    Renders the image and returns a data url
++  */
++
++
++  ImglyKit.prototype.renderToDataURL = function(format, options, callback) {
++    var _this = this;
++    if (options == null) {
++      options = {};
++    }
++    if (typeof options === "function") {
++      callback = options;
++      options = {};
++    }
++    return this.photoProcessor.renderImage(options, function(err, imageData) {
++      var canvas;
++      canvas = Utils.newCanvasFromImageData(imageData);
++      return callback(null, canvas.toDataURL(format));
++    });
++  };
++
++  return ImglyKit;
++
++})();
++
++window.ImglyKit = ImglyKit;
++
++
++},{"./photo_processor.coffee":11,"./ui/controls/crop_control.coffee":77,"./ui/ui.coffee":80,"./utils.coffee":4,"__browserify_Buffer":3,"__browserify_process":1}],77:[function(require,module,exports){
++/*
++  ImglyKit
++  Copyright (c) 2013-2014 img.ly
++*/
++
++var CropControl, CropOperation, ListControl, Rect, Vector2,
++  __hasProp = {}.hasOwnProperty,
++  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
++
++ListControl = require("./base/list_control.coffee");
++
++Vector2 = require("../../math/vector2.coffee");
++
++Rect = require("../../math/rect.coffee");
++
++CropOperation = require("../../operations/crop_operation.coffee");
++
++CropControl = (function(_super) {
++  __extends(CropControl, _super);
++
++  CropControl.prototype.minimumCropSize = 50;
++
++  /*
++    @param {ImglyKit} app
++    @param {ImglyKit.UI} ui
++    @param {ImglyKit.UI.Controls} controls
++  */
++
++
++  function CropControl(app, ui, controls) {
++    this.app = app;
++    this.ui = ui;
++    this.controls = controls;
++    CropControl.__super__.constructor.apply(this, arguments);
++    this.listItems = [
++      {
++        name: "Square",
++        cssClass: "square",
++        method: "setSize",
++        "arguments": ["square"],
++        operation: CropOperation,
++        tooltip: "Squared crop",
++        options: {
++          size: "square"
++        }
++      }, {
++        name: "4:3",
++        cssClass: "4-3",
++        method: "setSize",
++        "arguments": ["4:3"],
++        operation: CropOperation,
++        tooltip: "4:3 crop",
++        options: {
++          size: "4:3"
++        },
++        "default": true
++      }, {
++        name: "16:9",
++        cssClass: "16-9",
++        method: "setSize",
++        "arguments": ["16:9"],
++        operation: CropOperation,
++        tooltip: "16:9 crop",
++        options: {
++          size: "16:9"
++        }
++      }
++    ];
++  }
++
++  CropControl.prototype.updateOptions = function(operationOptions) {
++    this.operationOptions = operationOptions;
++    return this.resizeCanvasControls();
++  };
++
++  /*
++    @param {jQuery.Object} canvasControlsContainer
++  */
++
++
++  CropControl.prototype.hasCanvasControls = true;
++
++  CropControl.prototype.setupCanvasControls = function(canvasControlsContainer) {
++    var div, position, _i, _j, _len, _len1, _ref, _ref1;
++    this.canvasControlsContainer = canvasControlsContainer;
++    /*
++      Create the dark parts around the cropped area
++    */
++
++    this.spotlightDivs = {};
++    _ref = ["tl", "tc", "tr", "lc", "rc", "bl", "bc", "br"];
++    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
++      position = _ref[_i];
++      div = $("<div>").addClass(ImglyKit.classPrefix + "canvas-cropping-spotlight").addClass(ImglyKit.classPrefix + "canvas-cropping-spotlight-" + position).appendTo(this.canvasControlsContainer);
++      this.spotlightDivs[position] = div;
++    }
++    /*
++      Create the center div (cropped area)
++    */
++
++    this.centerDiv = $("<div>").addClass(ImglyKit.classPrefix + "canvas-cropping-center").appendTo(this.canvasControlsContainer);
++    /*
++      Create the knobs the user can use to resize the cropped area
++    */
++
++    this.knobs = {};
++    _ref1 = ["tl", "tr", "bl", "br"];
++    for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
++      position = _ref1[_j];
++      div = $("<div>").addClass(ImglyKit.classPrefix + "canvas-knob").appendTo(this.canvasControlsContainer);
++      this.knobs[position] = div;
++    }
++    this.handleCenterDragging();
++    this.handleTopLeftKnob();
++    this.handleBottomRightKnob();
++    this.handleBottomLeftKnob();
++    return this.handleTopRightKnob();
+   };
+ 
+   /*
+-    @returns {ImglyKit.PhotoProcessor}
++    Handles the dragging of the upper right knob
+   */
+ 
+ 
+-  ImglyKit.prototype.getPhotoProcessor = function() {
+-    return this.photoProcessor;
++  CropControl.prototype.handleTopRightKnob = function() {
++    var knob,
++      _this = this;
++    knob = this.knobs.tr;
++    return knob.mousedown(function(e) {
++      var canvasRect, initialEnd, initialMousePosition, initialStart, ratio;
++      canvasRect = new Rect(0, 0, _this.canvasControlsContainer.width(), _this.canvasControlsContainer.height());
++      initialMousePosition = new Vector2(e.clientX, e.clientY);
++      initialStart = _this.operationOptions.start.clone();
++      initialEnd = _this.operationOptions.end.clone();
++      ratio = _this.operationOptions.ratio;
++      $(document).mouseup(function(e) {
++        $(document).off("mouseup");
++        return $(document).off("mousemove");
++      });
++      return $(document).mousemove(function(e) {
++        var diffMousePosition, endInPixels, heightInPixels, startInPixels, widthInPixels;
++        diffMousePosition = new Vector2(e.clientX, e.clientY).substract(initialMousePosition);
++        endInPixels = new Vector2().copy(initialEnd).multiplyWithRect(canvasRect);
++        startInPixels = new Vector2().copy(initialStart).multiplyWithRect(canvasRect);
++        if (_this.operationOptions.ratio === 0) {
++          _this.operationOptions.start.copy(startInPixels);
++          _this.operationOptions.start.y += diffMousePosition.y;
++          _this.operationOptions.start.clamp(new Vector2(startInPixels.x, 1), new Vector2(startInPixels.x, endInPixels.y - 50)).divideByRect(canvasRect);
++          _this.operationOptions.end.copy(endInPixels);
++          _this.operationOptions.end.x += diffMousePosition.x;
++          _this.operationOptions.end.clamp(new Vector2(startInPixels.x + 50, endInPixels.y), new Vector2(canvasRect.width - 1, endInPixels.y)).divideByRect(canvasRect);
++        } else {
++          endInPixels.x += (diffMousePosition.x - diffMousePosition.y) / 2;
++          endInPixels.clamp(startInPixels.x + 50, canvasRect.width - 1);
++          widthInPixels = endInPixels.x - startInPixels.x;
++          heightInPixels = widthInPixels / _this.operationOptions.ratio;
++          if (endInPixels.y - heightInPixels < 1) {
++            heightInPixels = _this.operationOptions.end.y * canvasRect.height - 1;
++            widthInPixels = heightInPixels * _this.operationOptions.ratio;
++          }
++          _this.operationOptions.end.x = (startInPixels.x + widthInPixels) / canvasRect.width;
++          _this.operationOptions.start.y = (endInPixels.y - heightInPixels) / canvasRect.height;
++        }
++        return _this.resizeCanvasControls();
++      });
++    });
+   };
+ 
+   /*
+-    @param {String} file path
+-    @returns {String} assets file path
++    Handles the dragging of the lower left knob
+   */
+ 
+ 
+-  ImglyKit.prototype.buildAssetsPath = function(path) {
+-    return this.options.assetsPath + "/" + path;
++  CropControl.prototype.handleBottomLeftKnob = function() {
++    var knob,
++      _this = this;
++    knob = this.knobs.bl;
++    return knob.mousedown(function(e) {
++      var canvasRect, initialEnd, initialMousePosition, initialStart, ratio;
++      canvasRect = new Rect(0, 0, _this.canvasControlsContainer.width(), _this.canvasControlsContainer.height());
++      initialMousePosition = new Vector2(e.clientX, e.clientY);
++      initialStart = _this.operationOptions.start.clone();
++      initialEnd = _this.operationOptions.end.clone();
++      ratio = _this.operationOptions.ratio;
++      $(document).mouseup(function(e) {
++        $(document).off("mouseup");
++        return $(document).off("mousemove");
++      });
++      return $(document).mousemove(function(e) {
++        var diffMousePosition, endInPixels, heightInPixels, startInPixels, widthInPixels;
++        diffMousePosition = new Vector2(e.clientX, e.clientY).substract(initialMousePosition);
++        endInPixels = new Vector2().copy(initialEnd).multiplyWithRect(canvasRect);
++        startInPixels = new Vector2().copy(initialStart).multiplyWithRect(canvasRect);
++        if (_this.operationOptions.ratio === 0) {
++          _this.operationOptions.end.copy(endInPixels);
++          _this.operationOptions.end.y += diffMousePosition.y;
++          _this.operationOptions.end.clamp(new Vector2(endInPixels.x, startInPixels.y + 50), new Vector2(endInPixels.x, canvasRect.height - 1)).divideByRect(canvasRect);
++          _this.operationOptions.start.copy(startInPixels);
++          _this.operationOptions.start.x += diffMousePosition.x;
++          _this.operationOptions.start.clamp(new Vector2(1, 1), new Vector2(endInPixels.x - 50, endInPixels.y - 50)).divideByRect(canvasRect);
++        } else {
++          startInPixels.x += (diffMousePosition.x - diffMousePosition.y) / 2;
++          startInPixels.clamp(1, endInPixels.x - 50);
++          widthInPixels = endInPixels.x - startInPixels.x;
++          heightInPixels = widthInPixels / _this.operationOptions.ratio;
++          if (startInPixels.y + heightInPixels > canvasRect.height - 1) {
++            heightInPixels = (1 - _this.operationOptions.start.y) * canvasRect.height - 1;
++            widthInPixels = heightInPixels * _this.operationOptions.ratio;
++          }
++          _this.operationOptions.start.x = (endInPixels.x - widthInPixels) / canvasRect.width;
++          _this.operationOptions.end.y = (startInPixels.y + heightInPixels) / canvasRect.height;
++        }
++        return _this.resizeCanvasControls();
++      });
++    });
+   };
+ 
+   /*
+-    @param {Image|String} image Data URL or Image object
++    Handles the dragging of the lower right knob
+   */
+ 
+ 
+-  ImglyKit.prototype.run = function(image) {
+-    var dataUrl, error,
++  CropControl.prototype.handleBottomRightKnob = function() {
++    var knob,
+       _this = this;
+-    this.image = image;
+-    this.checkSupport();
+-    if (this.options.ratio != null) {
+-      this.options.initialControls = require("./ui/controls/crop_control.coffee");
+-      this.options.forceInitialControls = true;
+-      this.options.operationOptionsHook = function(operation) {
+-        return operation.setRatio(_this.options.ratio);
+-      };
+-    }
+-    if (!(typeof this.image === "string" || this.image instanceof Image)) {
+-      throw new Error("First parameter needs to be a String or an Image");
+-    }
+-    if (typeof this.image === "string") {
+-      if (this.image.slice(0, 10) !== "data:image") {
+-        error = new Error("First parameter is a string, but not an image data URL");
+-        error.name = "InvalidError";
+-        throw error;
+-      }
+-      dataUrl = this.image;
+-      this.image = new Image();
+-      this.image.src = dataUrl;
+-    }
+-    if (this.image.width > 0 && this.image.height > 0) {
+-      return this.onImageLoaded();
+-    } else {
+-      return this.image.onload = this.onImageLoaded;
+-    }
++    knob = this.knobs.br;
++    return knob.mousedown(function(e) {
++      var canvasRect, initialEnd, initialMousePosition, ratio;
++      canvasRect = new Rect(0, 0, _this.canvasControlsContainer.width(), _this.canvasControlsContainer.height());
++      initialMousePosition = new Vector2(e.clientX, e.clientY);
++      initialEnd = new Vector2().copy(_this.operationOptions.end);
++      ratio = _this.operationOptions.ratio;
++      $(document).mouseup(function(e) {
++        $(document).off("mouseup");
++        return $(document).off("mousemove");
++      });
++      return $(document).mousemove(function(e) {
++        var diffMousePosition, endInPixels, height, heightInPixels, startInPixels, width, widthInPixels, _ref;
++        diffMousePosition = new Vector2(e.clientX, e.clientY).substract(initialMousePosition);
++        endInPixels = new Vector2().copy(initialEnd).multiplyWithRect(canvasRect);
++        startInPixels = new Vector2().copy(_this.operationOptions.start).multiplyWithRect(canvasRect);
++        if (_this.operationOptions.ratio === 0) {
++          _this.operationOptions.end.copy(endInPixels).add(diffMousePosition).clamp(new Vector2(startInPixels.x + 50, startInPixels.y + 50), new Vector2(canvasRect.width - 1, canvasRect.height - 1)).divideByRect(canvasRect);
++          _ref = _this.app.ui.getCanvas().getImageData(), width = _ref.width, height = _ref.height;
++          widthInPixels = endInPixels.x - startInPixels.x;
++        } else {
++          endInPixels.x += (diffMousePosition.x + diffMousePosition.y) / 2;
++          endInPixels.clamp(startInPixels.x + 50, canvasRect.width - 1);
++          widthInPixels = endInPixels.x - startInPixels.x;
++          heightInPixels = widthInPixels / _this.operationOptions.ratio;
++          if (startInPixels.y + heightInPixels > canvasRect.height - 1) {
++            heightInPixels = (1 - _this.operationOptions.start.y) * canvasRect.height - 1;
++            widthInPixels = heightInPixels * _this.operationOptions.ratio;
++          }
++          _this.operationOptions.end.copy(_this.operationOptions.start).multiplyWithRect(canvasRect).add(new Vector2(widthInPixels, heightInPixels)).divideByRect(canvasRect);
++        }
++        return _this.resizeCanvasControls();
++      });
++    });
+   };
+ 
+   /*
+-    Gets called as soon as the image has been loaded
+-    and the image dimensions are available
++    Handles the dragging of the upper left knob
+   */
+ 
+ 
+-  ImglyKit.prototype.onImageLoaded = function() {
+-    /*
+-      Set up the user interface
+-    */
+-
+-    var _this = this;
+-    if (!this.ui.initialized) {
+-      this.ui.init();
+-      this.photoProcessor.setCanvas(this.ui.getCanvas());
+-      this.ui.on("preview_operation", function(operation) {
+-        var _ref;
+-        if ((_ref = _this.ui.getCurrentControls()) != null) {
+-          _ref.setOperation(operation);
+-        }
+-        return _this.photoProcessor.setPreviewOperation(operation);
+-      });
+-      this.ui.on("back", function() {
+-        _this.photoProcessor.unsetPreviewOperation();
+-        return _this.ui.resetControls();
+-      });
+-      this.ui.on("done", function() {
+-        _this.photoProcessor.acceptPreviewOperation();
+-        return _this.ui.resetControls();
++  CropControl.prototype.handleTopLeftKnob = function() {
++    var knob,
++      _this = this;
++    knob = this.knobs.tl;
++    return knob.mousedown(function(e) {
++      var canvasRect, initialMousePosition, initialStart, ratio;
++      canvasRect = new Rect(0, 0, _this.canvasControlsContainer.width(), _this.canvasControlsContainer.height());
++      initialMousePosition = new Vector2(e.clientX, e.clientY);
++      initialStart = new Vector2().copy(_this.operationOptions.start);
++      ratio = _this.operationOptions.ratio;
++      $(document).mouseup(function(e) {
++        $(document).off("mouseup");
++        return $(document).off("mousemove");
+       });
+-    } else {
+-      this.photoProcessor.reset();
+-      this.ui.resetControls();
+-    }
+-    /*
+-      Reset everything
+-    */
+-
+-    this.reset();
+-    /*
+-      Set source image of the photo processor and tell
+-      it to render it
+-    */
+-
+-    this.photoProcessor.setSourceImage(this.image);
+-    return this.photoProcessor.renderPreview(function(err) {
+-      /*
+-        Do we have controls that have to be shown
+-        on startup?
+-      */
+-
+-      var controls;
+-      if (_this.options.initialControls) {
+-        controls = _this.ui.controls;
+-        controls.switchToControls(_this.options.initialControls, controls.getCurrentControls(), {
+-          backButton: !_this.options.forceInitialControls,
+-          showList: !_this.options.forceInitialControls
+-        });
+-        if (_this.options.operationOptionsHook != null) {
+-          return _this.options.operationOptionsHook(controls.getCurrentControls().operation);
++      return $(document).mousemove(function(e) {
++        var diffMousePosition, endInPixels, heightInPixels, startInPixels, widthInPixels;
++        diffMousePosition = new Vector2(e.clientX, e.clientY).substract(initialMousePosition);
++        if (_this.operationOptions.ratio === 0) {
++          endInPixels = new Vector2().copy(_this.operationOptions.end).multiplyWithRect(canvasRect);
++          _this.operationOptions.start.copy(initialStart).multiplyWithRect(canvasRect).add(diffMousePosition).clamp(new Vector2(1, 1), new Vector2(endInPixels.x - 50, endInPixels.y - 50)).divideByRect(canvasRect);
++        } else {
++          endInPixels = new Vector2().copy(_this.operationOptions.end).multiplyWithRect(canvasRect);
++          startInPixels = new Vector2().copy(initialStart).multiplyWithRect(canvasRect);
++          startInPixels.x += (diffMousePosition.x + diffMousePosition.y) / 2;
++          startInPixels.clamp(1, endInPixels.x - 50);
++          widthInPixels = endInPixels.x - startInPixels.x;
++          heightInPixels = widthInPixels / _this.operationOptions.ratio;
++          if (endInPixels.y - heightInPixels < 1) {
++            heightInPixels = _this.operationOptions.end.y * canvasRect.height - 1;
++            widthInPixels = heightInPixels * _this.operationOptions.ratio;
++          }
++          _this.operationOptions.start.copy(_this.operationOptions.end).multiplyWithRect(canvasRect).substract(new Vector2(widthInPixels, heightInPixels)).divideByRect(canvasRect);
+         }
+-      }
++        return _this.resizeCanvasControls();
++      });
+     });
+   };
+ 
+   /*
+-    Resets everything
+-  */
+-
+-
+-  ImglyKit.prototype.reset = function() {
+-    return this.photoProcessor.reset();
+-  };
+-
+-  /*
+-    Renders the image and returns a data url
++    Handles the dragging of the visible, cropped part
+   */
+ 
+ 
+-  ImglyKit.prototype.renderToDataURL = function(format, options, callback) {
++  CropControl.prototype.handleCenterDragging = function() {
+     var _this = this;
+-    if (options == null) {
+-      options = {};
+-    }
+-    if (typeof options === "function") {
+-      callback = options;
+-      options = {};
+-    }
+-    return this.photoProcessor.renderImage(options, function(err, imageData) {
+-      var canvas;
+-      canvas = Utils.newCanvasFromImageData(imageData);
+-      return callback(null, canvas.toDataURL(format));
++    return this.centerDiv.mousedown(function(e) {
++      var canvasRect, centerRect, initialEnd, initialMousePosition, initialStart, max, min;
++      canvasRect = new Rect(0, 0, _this.canvasControlsContainer.width(), _this.canvasControlsContainer.height());
++      min = new Vector2(1, 1);
++      max = new Vector2(canvasRect.width - _this.centerDiv.width() - 1, canvasRect.height - _this.centerDiv.height() - 1);
++      initialMousePosition = new Vector2(e.clientX, e.clientY);
++      initialStart = new Vector2().copy(_this.operationOptions.start);
++      initialEnd = new Vector2().copy(_this.operationOptions.end);
++      centerRect = new Rect(0, 0, _this.centerDiv.width(), _this.centerDiv.height());
++      $(document).mouseup(function(e) {
++        $(document).off("mouseup");
++        return $(document).off("mousemove");
++      });
++      return $(document).mousemove(function(e) {
++        var currentMousePosition, diffMousePosition;
++        currentMousePosition = new Vector2(e.clientX, e.clientY);
++        diffMousePosition = new Vector2().copy(currentMousePosition).substract(initialMousePosition);
++        _this.operationOptions.start.copy(initialStart).multiplyWithRect(canvasRect).add(diffMousePosition).clamp(min, max).divideByRect(canvasRect);
++        _this.operationOptions.end.copy(_this.operationOptions.start).multiplyWithRect(canvasRect).addRect(centerRect).divideByRect(canvasRect);
++        return _this.resizeCanvasControls();
++      });
+     });
+   };
+ 
+-  return ImglyKit;
+-
+-})();
+-
+-window.ImglyKit = ImglyKit;
+-
+-
+-},{"./photo_processor.coffee":11,"./ui/controls/crop_control.coffee":20,"./ui/ui.coffee":80,"./utils.coffee":6,"__browserify_Buffer":3,"__browserify_process":1}],73:[function(require,module,exports){
+-/*
+-  ImglyKit
+-  Copyright (c) 2013-2014 img.ly
+-*/
+-
+-var Operation, Rect, TextOperation, Utils, Vector2,
+-  __hasProp = {}.hasOwnProperty,
+-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+-
+-Operation = require("./operation.coffee");
+-
+-Utils = require("../utils.coffee");
+-
+-Vector2 = require("../math/vector2.coffee");
+-
+-Rect = require("../math/rect.coffee");
+-
+-TextOperation = (function(_super) {
+-  __extends(TextOperation, _super);
+-
+-  TextOperation.prototype.renderPreview = false;
+-
+-  function TextOperation(app, options) {
+-    var _base, _base1, _base2, _base3, _base4, _base5, _base6, _base7, _base8;
+-    this.app = app;
+-    this.options = options != null ? options : {};
+-    TextOperation.__super__.constructor.apply(this, arguments);
+-    (_base = this.options).start || (_base.start = new Vector2(0.2, 0.2));
+-    (_base1 = this.options).width || (_base1.width = 300);
+-    (_base2 = this.options).text || (_base2.text = "Text");
+-    (_base3 = this.options).color || (_base3.color = "rgba(255, 255, 255, 1.0)");
+-    (_base4 = this.options).backgroundColor || (_base4.backgroundColor = "rgba(0, 0, 0, 0.5)");
+-    (_base5 = this.options).fontSize || (_base5.fontSize = 0.1);
+-    (_base6 = this.options).lineHeight || (_base6.lineHeight = 1.1);
+-    (_base7 = this.options).paddingLeft || (_base7.paddingLeft = 0);
+-    (_base8 = this.options).paddingTop || (_base8.paddingTop = 0);
+-  }
+-
+-  /*
+-    @param {String} font
+-  */
++  CropControl.prototype.updateOperationOptions = function() {
++    var canvasHeight, canvasWidth;
++    canvasWidth = this.canvasControlsContainer.width();
++    canvasHeight = this.canvasControlsContainer.height();
++    this.operation.setStart(this.operationOptions.start.x / canvasWidth, this.operationOptions.start.y / canvasHeight);
++    return this.operation.setEnd(this.operationOptions.end.x / canvasWidth, this.operationOptions.end.y / canvasHeight);
++  };
+ 
++  CropControl.prototype.resizeCanvasControls = function() {
++    var $el, bottomHeight, canvasRect, centerHeight, centerWidth, el, leftWidth, rightWidth, scaledEnd, scaledStart, topHeight, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _len5, _m, _n, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
++    canvasRect = new Rect(0, 0, this.canvasControlsContainer.width(), this.canvasControlsContainer.height());
++    scaledStart = new Vector2().copy(this.operationOptions.start).multiplyWithRect(canvasRect);
++    scaledEnd = new Vector2().copy(this.operationOptions.end).multiplyWithRect(canvasRect);
++    /*
++      Set fragment widths
++    */
+ 
+-  TextOperation.prototype.setFont = function(font) {
+-    this.options.font = font;
+-    return this.emit("updateOptions", this.options);
+-  };
++    leftWidth = scaledStart.x;
++    _ref = ["tl", "lc", "bl"];
++    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
++      el = _ref[_i];
++      $el = this.spotlightDivs[el];
++      $el.css({
++        width: leftWidth,
++        left: 0
++      });
++      if (this.knobs[el] != null) {
++        this.knobs[el].css({
++          left: leftWidth
++        });
++      }
++    }
++    centerWidth = scaledEnd.x - scaledStart.x;
++    _ref1 = ["tc", "bc"];
++    for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
++      el = _ref1[_j];
++      $el = this.spotlightDivs[el];
++      $el.css({
++        width: centerWidth,
++        left: leftWidth
++      });
++    }
++    rightWidth = canvasRect.width - centerWidth - leftWidth;
++    _ref2 = ["tr", "rc", "br"];
++    for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
++      el = _ref2[_k];
++      $el = this.spotlightDivs[el];
++      $el.css({
++        width: rightWidth,
++        left: leftWidth + centerWidth
++      });
++      if (this.knobs[el] != null) {
++        this.knobs[el].css({
++          left: leftWidth + centerWidth
++        });
++      }
++    }
++    /*
++      Set fragment heights
++    */
+ 
+-  TextOperation.prototype.apply = function(imageData) {
+-    var boundingBoxHeight, boundingBoxWidth, canvas, context, line, lineHeight, lineNum, lineOffset, lineWidth, padding, paddingVector, scaledFontSize, scaledStart, _i, _j, _len, _len1, _ref, _ref1;
+-    scaledFontSize = this.options.fontSize * imageData.height;
+-    paddingVector = new Vector2(this.options.paddingLeft, this.options.paddingTop);
+-    scaledStart = new Vector2().copy(this.options.start).add(paddingVector).multiplyWithRect(imageData);
+-    canvas = Utils.newCanvasFromImageData(imageData);
+-    context = canvas.getContext("2d");
+-    context.font = "normal " + scaledFontSize + "px " + this.options.font;
+-    context.textBaseline = "hanging";
+-    lineHeight = this.options.lineHeight;
+-    boundingBoxWidth = 0;
+-    boundingBoxHeight = 0;
+-    _ref = this.options.text.split("\n");
+-    for (lineNum = _i = 0, _len = _ref.length; _i < _len; lineNum = ++_i) {
+-      line = _ref[lineNum];
+-      lineWidth = context.measureText(line).width;
+-      if (lineWidth > boundingBoxWidth) {
+-        boundingBoxWidth = lineWidth;
++    topHeight = scaledStart.y;
++    _ref3 = ["tl", "tc", "tr"];
++    for (_l = 0, _len3 = _ref3.length; _l < _len3; _l++) {
++      el = _ref3[_l];
++      $el = this.spotlightDivs[el];
++      $el.css({
++        height: topHeight,
++        top: 0
++      });
++      if (this.knobs[el] != null) {
++        this.knobs[el].css({
++          top: topHeight
++        });
+       }
+-      boundingBoxHeight += scaledFontSize * lineHeight;
+     }
+-    context.fillStyle = this.options.backgroundColor;
+-    padding = 10;
+-    context.fillRect(scaledStart.x - padding, scaledStart.y - padding, boundingBoxWidth + padding * 2, boundingBoxHeight + padding);
+-    context.fillStyle = this.options.color;
+-    _ref1 = this.options.text.split("\n");
+-    for (lineNum = _j = 0, _len1 = _ref1.length; _j < _len1; lineNum = ++_j) {
+-      line = _ref1[lineNum];
+-      lineOffset = lineNum * scaledFontSize * lineHeight;
+-      context.fillText(line, scaledStart.x, scaledStart.y + this.options.paddingLeft + lineOffset);
++    centerHeight = scaledEnd.y - scaledStart.y;
++    _ref4 = ["lc", "rc"];
++    for (_m = 0, _len4 = _ref4.length; _m < _len4; _m++) {
++      el = _ref4[_m];
++      $el = this.spotlightDivs[el];
++      $el.css({
++        height: centerHeight,
++        top: topHeight
++      });
+     }
+-    return context.getImageData(0, 0, imageData.width, imageData.height);
++    bottomHeight = canvasRect.height - topHeight - centerHeight;
++    _ref5 = ["bl", "bc", "br"];
++    for (_n = 0, _len5 = _ref5.length; _n < _len5; _n++) {
++      el = _ref5[_n];
++      $el = this.spotlightDivs[el];
++      $el.css({
++        height: bottomHeight,
++        top: topHeight + centerHeight
++      });
++      if (this.knobs[el] != null) {
++        this.knobs[el].css({
++          top: topHeight + centerHeight
++        });
++      }
++    }
++    /*
++      Set center fragment dimensions and position
++    */
++
++    return this.centerDiv.css({
++      height: centerHeight,
++      width: centerWidth,
++      left: leftWidth,
++      top: topHeight
++    });
+   };
+ 
+-  return TextOperation;
++  return CropControl;
+ 
+-})(Operation);
++})(ListControl);
+ 
+-module.exports = TextOperation;
++module.exports = CropControl;
+ 
+ 
+-},{"../math/rect.coffee":18,"../math/vector2.coffee":17,"../utils.coffee":6,"./operation.coffee":8}]},{},[81])
++},{"../../math/rect.coffee":62,"../../math/vector2.coffee":57,"../../operations/crop_operation.coffee":74,"./base/list_control.coffee":13}]},{},[81])
+ ;
+\ No newline at end of file
+diff --git a/coffeescripts/operations/crop_operation.coffee b/coffeescripts/operations/crop_operation.coffee
+index 69d563b..0eefa94 100644
+--- a/coffeescripts/operations/crop_operation.coffee
++++ b/coffeescripts/operations/crop_operation.coffee
+@@ -11,7 +11,7 @@ class CropOperation extends Operation
+     super
+     @options.start ?= new Vector2(0.1, 0.1)
+     @options.end   ?= new Vector2(0.9, 0.9)
+-    @options.ratio ?= 0
++    @options.ratio ?= 4 / 3
+ 
+   setRatio: (ratio) =>
+     @options.ratio = ratio
+diff --git a/coffeescripts/ui/controls/crop_control.coffee b/coffeescripts/ui/controls/crop_control.coffee
+index e15c67a..9ec9b9c 100644
+--- a/coffeescripts/ui/controls/crop_control.coffee
++++ b/coffeescripts/ui/controls/crop_control.coffee
+@@ -19,17 +19,17 @@ class CropControl extends ListControl
+   constructor: (@app, @ui, @controls) ->
+     super
+     @listItems = [
+-      {
+-        name: "Custom"
+-        cssClass: "custom"
+-        method: "setSize"
+-        arguments: ["free"]
+-        operation: CropOperation
+-        tooltip: "Freeform crop"
+-        default: true
+-        options:
+-          size: "free"
+-      },
++#      {
++#        name: "Custom"
++#        cssClass: "custom"
++#        method: "setSize"
++#        arguments: ["free"]
++#        operation: CropOperation
++#        tooltip: "Freeform crop"
++#        default: true
++#        options:
++#          size: "free"
++#      },
+       {
+         name: "Square"
+         cssClass: "square"
+@@ -49,6 +49,7 @@ class CropControl extends ListControl
+         tooltip: "4:3 crop"
+         options:
+           size: "4:3"
++        default: true
+       },
+       {
+         name: "16:9"
+-- 
+2.1.0
+

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Fajita</title>
+  <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.4.5/css/bootstrapvalidator.css">
+  <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap-tour/0.9.1/css/bootstrap-tour.min.css">
+  <link rel="stylesheet" href="../build/imgly.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="font.css" type="text/css" media="all">
+  <script type='text/javascript' src='http://code.jquery.com/jquery-git.js'></script>
+  <script type='text/javascript' src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+  <script type='text/javascript' src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+  <script type='text/javascript' src="//cdn.jsdelivr.net/bootstrap-tour/0.9.1/js/bootstrap-tour.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.4.5/js/bootstrapvalidator.min.js"></script>
+  <script src="../build/imgly.concat.js"></script>
+  <script src="example-filereader.js"></script>
+  <style>
+  body{
+    background-color: #f8f8f8;
+  }
+  .panel-heading, .panel-success{
+    background-color: #666666!important;
+    border-color: #666666!important;
+  }
+  .container{
+    min-width: 1000px;
+    padding-top: 40px;
+  }
+    #container {
+      width: 520px;
+      height: 580px;
+    }
+    #result_container{
+      height: auto;
+      width: auto;
+      background-color: #ff9100;
+    }
+    .imgly-container .imgly-controls-container {
+      background-color: #000!important;
+    }
+    .thumbnail{
+      width: auto;
+      float: right;
+    }
+    /*HIDE NON-CROP FILTERS*/
+    .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-stickers,
+    .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-filters,
+    .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-orientation,
+    .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-focus,
+    .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-brightness,
+    .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-contrast,
+    .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-saturation,
+    .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-text,
+    .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-frames,
+    .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-custom{
+      display:none;
+    }
+    .panel-success{
+      min-width: 550px;
+    }
+    .remove{
+      margin: 0 auto;
+    }
+    .top{
+      position: fixed;
+      height: 100px;
+      width: 100%;
+      z-index: 1000;
+      box-shadow: 0px 5px 5px -5px;
+      background-color: #fff;
+    }
+    .logo{
+      /*background-image: url('logo.png');
+      background-repeat: no-repeat;*/
+      color: #000;
+      width: 350px;
+      height: 130px;
+      border-style: none;
+      top: -25px;
+      left: 100px;
+    }
+    .btn-default, #renderButton{
+      font-family: Knowledge;
+    }
+    .panel, .panel-heading{
+      padding: 20px;
+      border-radius: 3px;
+      background: #fff;
+      -webkit-box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.2);
+      -moz-box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.2);
+      box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.2);
+      margin-bottom: 20px;
+    }
+    .crop{
+      position: fixed;
+      top: 120px;
+      width: auto;
+    }
+    .render{
+      position: relative;
+      top: 120px;
+    }
+  </style>
+</head>
+<body>
+<div class="container-fluid">
+  <form>
+  <div class="row top">
+  <div class="col-md-4"></div>
+  <div class="col-md-4 logo">Image Cropper</div>
+  <div class="col-md-4"></div>
+  </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="panel crop">
+            <div class="well">
+            <input type="file" name="fileupload" class="btn btn-default form-control" id="file"/>
+            <button class="btn btn-default" id="reset">Reset</button>
+            <input id="renderButton" type="button" value="Render final image" class="btn btn-primary"/>
+            </div>
+            <div class="panel-body">
+              <div id="container" class="well"></div>
+        </div>
+        </div>
+      </div>
+      <div class="col-md-6 render">
+        <div class="panel">
+            <div class="panel-body">
+              <div id="result_container" class="result thumbnail"></div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  </div>
+</body>
+
+<script type="text/javascript">
+//HIDE CONTROLS UNTIL IMAGE SELECTED//
+$("#reset, #renderButton, .render").hide();
+$("#file").click(function() {
+  $("#reset, #renderButton").show();
+});
+//ONLY SHOW RENDERED VIEW WHEN RENDER BUTTON CLICKED//
+$("#renderButton").click(function(){
+  $(".render").fadeIn("slow").animate({right: '200px'});
+  $(".render, #result_container").show();
+})
+//RESET RENDER VIEW//
+$( "#reset" ).click(function() {
+  $( ".render, #container" ).empty();
+});
+
+$(window).load(function(){
+// Instance the tour
+var tour = new Tour({
+  debug: true,
+  storage: window.localStorage,
+  steps: [
+  {
+    element: "#file",
+    title: "<b>Step 1 - Choose a photo</b>",
+    content: "Choose a photo to upload. Only images may be uploaded",
+    placement: "bottom",
+    backdrop: true,
+    container: 'body',
+    animation: true
+  },
+  {
+    element: "#container",
+    title: "<b>Step 2 - Crop image</b>",
+    content: "Select one of three defined image ratios:"+'<ul>'+"<li>square</li>"+"<li>4:3</li>"+"<li>16:9</li>",
+    placement: "right",
+    backdrop: true, 
+    animation: true
+    /*onShow: function() {
+      return $("#appSettings").addClass("open");
+    },      
+    onHide: function() {
+      $("#appSettings").removeClass("open"); 
+    }*/ 
+  },
+  {
+    element: "#renderButton",
+    title: "<b>Step 3 - Render image after cropping</b>",
+    content: "Render the image after you have selected a crop ratio",
+    placement: "left",
+    backdrop: true,
+    container: 'body',
+    animation: true
+  },
+  {
+    element: "#result_container",
+    title: "<b>Step 4 - Cropped image result</b>",
+    content: "View result of cropped image",
+    placement: "left",
+    backdrop: true,
+    animation: true
+  },    
+]});
+
+//IF END BUTTON CLICKED, TOUR WILL NOT LOAD ON PAGE REFRESH
+if (tour.ended()) {
+  tour.stop();
+} else {
+  tour.init();
+  tour.start();
+}
+
+});
+
+$('#file').bootstrapValidator({
+        live: 'enabled',
+        fields: {
+            fileupload: {
+                validators: {
+                    file: {
+                        extension: 'png',
+                        type: 'image/png',
+                        minSize: 1024*1024, // for example 100 KB  
+                        message: 'The selected file is not valid, or the size is not large enough!'
+                    }
+                }
+            }
+        }
+    });
+
+</script>
+</html>
