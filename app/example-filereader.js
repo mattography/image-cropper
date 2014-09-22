@@ -9,7 +9,8 @@ $(function () {
   var fileInput = document.getElementById("file")
     , renderButton = $("#renderButton")
     , imgly = new ImglyKit({
-        container: "#container"
+        container: "#container",
+        ratio: 4 / 3
       });
 
   // As soon as the user selects a file...

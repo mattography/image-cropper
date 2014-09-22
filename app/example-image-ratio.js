@@ -19,7 +19,7 @@ $(function () {
     // with the image
     imgly = new ImglyKit({
       container: "#container",
-      ratio: 1 / 1
+      ratio: 4 / 3
     });
 
     try {
@@ -52,13 +52,13 @@ $(function () {
     // `dataUrl` now contains a resized rendered image with
     // a size of 100x100 pixels while _not_ keeping the ratio
 
-    imgly.renderToDataURL("png", { size: "300x" }, function (err, dataUrl) {
+    imgly.renderToDataURL("png", { size: "600" }, function (err, dataUrl) {
       // `dataUrl` now contains a resized rendered image with
       // a width of 300 pixels while keeping the ratio
 
       $("<img>").attr({
         src: dataUrl
-      }).appendTo($("body"));
+      }).appendTo($(".result"));
     });
 
   });

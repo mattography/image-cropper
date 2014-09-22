@@ -10,7 +10,6 @@
   <link rel="stylesheet" href="font.css" type="text/css" media="all">
   <script type='text/javascript' src='http://code.jquery.com/jquery-git.js'></script>
   <script type='text/javascript' src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-  <script type='text/javascript' src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
   <script type='text/javascript' src="//cdn.jsdelivr.net/bootstrap-tour/0.9.1/js/bootstrap-tour.min.js"></script>
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.4.5/js/bootstrapvalidator.min.js"></script>
   <script src="../build/imgly.concat.js"></script>
@@ -29,7 +28,7 @@
   }
     #container {
       width: 520px;
-      height: 580px;
+      height: 520px;
     }
     #result_container{
       height: auto;
@@ -38,6 +37,7 @@
     }
     .imgly-container .imgly-controls-container {
       background-color: #000!important;
+      height: 200px;
     }
     .thumbnail{
       width: auto;
@@ -71,8 +71,8 @@
       background-color: #fff;
     }
     .logo{
-      /*background-image: url('logo.png');
-      background-repeat: no-repeat;*/
+      background-image: url('http://reuters.tv/images/logo.png');
+      background-repeat: no-repeat;
       color: #000;
       width: 350px;
       height: 130px;
@@ -144,12 +144,12 @@ $("#file").click(function() {
 });
 //ONLY SHOW RENDERED VIEW WHEN RENDER BUTTON CLICKED//
 $("#renderButton").click(function(){
-  $(".render").fadeIn("slow").animate({right: '200px'});
+  $(".render").fadeIn("slow").animate({right: '50px'});
   $(".render, #result_container").show();
 })
 //RESET RENDER VIEW//
 $( "#reset" ).click(function() {
-  $( ".render, #container" ).empty();
+  $( "#container" ).empty();
 });
 
 $(window).load(function(){
