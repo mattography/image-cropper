@@ -11,7 +11,7 @@
   <script type='text/javascript' src='http://code.jquery.com/jquery-git.js'></script>
   <script type='text/javascript' src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
   <script type='text/javascript' src="//cdn.jsdelivr.net/bootstrap-tour/0.9.1/js/bootstrap-tour.min.js"></script>
-  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.4.5/js/bootstrapvalidator.min.js"></script>
+  <script type="text/javascript" src="http://oss.maxcdn.com/jquery.bootstrapvalidator/0.5.1/js/bootstrapValidator.min.js"></script>
   <script src="../build/imgly.concat.js"></script>
   <script src="example-filereader.js"></script>
   <style>
@@ -101,130 +101,93 @@
       position: relative;
       top: 120px;
     }
+    #file{
+      z-index: 1000;
+    }
+    .help-block{
+    position:relative; 
+    z-index: 3000;
+    color: red;
+    font-weight: bold;
+    padding: 246px 46px;
+    }   
+    div#file.dynamic_style{ background-color: #ff9100 }
   </style>
 </head>
 <body>
 <div class="container-fluid">
-  <form>
-  <div class="row top">
-  <div class="col-md-4"></div>
-  <div class="col-md-4 logo">Image Cropper</div>
-  <div class="col-md-4"></div>
-  </div>
-    <div class="row">
-      <div class="col-md-6">
-        <div class="panel crop">
-            <div class="well">
-            <input type="file" name="fileupload" class="btn btn-default form-control" id="file"/>
-            <button class="btn btn-default" id="reset">Reset</button>
-            <input id="renderButton" type="button" value="Render final image" class="btn btn-primary"/>
+    <form id="fileupload"  class="form-horizontal" enctype="multipart/form-data">
+        <div class="row top">
+            <div class="col-md-4"></div>
+            <div class="col-md-4 logo">Image Cropper</div>
+            <div class="col-md-4"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel crop">
+                    <div class="well">
+                        <input type="file" multiple name="testing" class="btn btn-default form-control" id="file" accept="image/jpg, image/png, image/jpeg"/>
+                        <button class="btn btn-default" id="reset">Reset</button>
+                        <input id="renderButton" type="button" value="Render final image" class="btn btn-primary" />
+                    </div>
+                    <div class="panel-body">
+                        <div id="container" class="well"></div>
+                    </div>
+                </div>
             </div>
-            <div class="panel-body">
-              <div id="container" class="well"></div>
+            <div class="col-md-6 render">
+                <div class="panel">
+                    <div class="panel-body">
+                        <div id="result_container" class="result thumbnail"></div>
+                    </div>
+                </div>
+            </div>
         </div>
+        <div class="form-group">
+        <div class="col-md-9 col-md-offset-3">
+            <div id="messages"></div>
         </div>
-      </div>
-      <div class="col-md-6 render">
-        <div class="panel">
-            <div class="panel-body">
-              <div id="result_container" class="result thumbnail"></div>
-        </div>
-        </div>
-      </div>
     </div>
-  </form>
-  </div>
+    </form>
+</div>
 </body>
 
 <script type="text/javascript">
 //HIDE CONTROLS UNTIL IMAGE SELECTED//
-$("#reset, #renderButton, .render").hide();
-$("#file").click(function() {
-  $("#reset, #renderButton").show();
-});
-//ONLY SHOW RENDERED VIEW WHEN RENDER BUTTON CLICKED//
-$("#renderButton").click(function(){
-  $(".render").fadeIn("slow").animate({right: '50px'});
-  $(".render, #result_container").show();
-})
-//RESET RENDER VIEW//
-$( "#reset" ).click(function() {
-  $( "#container" ).empty();
-});
+$(function () {
+    $("#reset, #renderButton, .render").hide();
 
-$(window).load(function(){
-// Instance the tour
-var tour = new Tour({
-  debug: true,
-  storage: window.localStorage,
-  steps: [
-  {
-    element: "#file",
-    title: "<b>Step 1 - Choose a photo</b>",
-    content: "Choose a photo to upload. Only images may be uploaded",
-    placement: "bottom",
-    backdrop: true,
-    container: 'body',
-    animation: true
-  },
-  {
-    element: "#container",
-    title: "<b>Step 2 - Crop image</b>",
-    content: "Select one of three defined image ratios:"+'<ul>'+"<li>square</li>"+"<li>4:3</li>"+"<li>16:9</li>",
-    placement: "right",
-    backdrop: true, 
-    animation: true
-    /*onShow: function() {
-      return $("#appSettings").addClass("open");
-    },      
-    onHide: function() {
-      $("#appSettings").removeClass("open"); 
-    }*/ 
-  },
-  {
-    element: "#renderButton",
-    title: "<b>Step 3 - Render image after cropping</b>",
-    content: "Render the image after you have selected a crop ratio",
-    placement: "left",
-    backdrop: true,
-    container: 'body',
-    animation: true
-  },
-  {
-    element: "#result_container",
-    title: "<b>Step 4 - Cropped image result</b>",
-    content: "View result of cropped image",
-    placement: "left",
-    backdrop: true,
-    animation: true
-  },    
-]});
-
-//IF END BUTTON CLICKED, TOUR WILL NOT LOAD ON PAGE REFRESH
-if (tour.ended()) {
-  tour.stop();
-} else {
-  tour.init();
-  tour.start();
-}
-
+    //ONLY SHOW RENDERED VIEW WHEN RENDER BUTTON CLICKED//
+    $("#renderButton").click(function () {
+        $(".render").fadeIn("slow").animate({
+            right: '50px'
+        });
+        $(".render, #result_container").show();
+    })
+    //RESET RENDER VIEW//
+    $("#reset").click(function () {
+        $(".imgly-container").empty();
+    });
+    $("#file").click(function () {
+        $("#reset, #renderButton").show();
+    });
 });
 
-$('#file').bootstrapValidator({
-        live: 'enabled',
+$(document).ready(function() {
+$('#fileupload').bootstrapValidator({
         fields: {
-            fileupload: {
+            testing: {
                 validators: {
                     file: {
-                        extension: 'png',
-                        type: 'image/png',
-                        minSize: 1024*1024, // for example 100 KB  
-                        message: 'The selected file is not valid, or the size is not large enough!'
+                        extension: 'jpg,jpeg,png',
+                        type: 'image/jpg,image/jpeg,image/png',
+                        maxSize: 2048 * 1024, // 2 MB
+                        message: 'The selected file is not valid'
                     }
                 }
             }
         }
     });
-
+});
 </script>
 </html>

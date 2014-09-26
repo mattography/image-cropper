@@ -19272,7 +19272,7 @@ UIControlsCrop = (function(_super) {
 
   UIControlsCrop.prototype.displayButtons = true;
 
-  UIControlsCrop.prototype.minimumCropSize = 500;
+  UIControlsCrop.prototype.minimumCropSize = 50;
 
   UIControlsCrop.prototype.singleOperation = true;
 
@@ -19741,7 +19741,7 @@ CropOperation = (function(_super) {
       _base1.end = new Vector2(0.9, 0.9);
     }
     if ((_base2 = this.options).ratio == null) {
-      _base2.ratio = 0;
+      _base2.ratio = 4 / 3;
     }
   }
 
@@ -19764,7 +19764,8 @@ CropOperation = (function(_super) {
         this.options.ratio = 4 / 3;
         break;
       case "16:9":
-        this.options.ratio = 16 / 9;
+        this.options.ratio = 9 / 16;
+        break;
     }
     if (this.options.ratio) {
       if (width / height <= this.options.ratio) {
@@ -21601,22 +21602,11 @@ module.exports = DrawImageOperation = (function(_super) {
     DrawImageOperation.__super__.constructor.apply(this, arguments);
     this.options.resizeButtonOffset = 20;
     this.options.scale = this.options.resizeButtonOffset + 100;
-    this.options.stickerImageWidth = 100;
-    this.options.stickerImageHeight = 100;
-    this.options.sticker = "stickers/sticker-glasses-nerd.png";
     this.options.widthRange = 570;
     this.options.heightRange = 427;
   }
 
-  /*
-    @param {String} sticker
-  */
-
-
-  DrawImageOperation.prototype.useSticker = function(sticker) {
-    this.options.sticker = sticker;
-    return this.emit("updateOptions", this.options);
-  };
+ 
 
   DrawImageOperation.prototype.apply = function(imageData) {
     var _this = this;

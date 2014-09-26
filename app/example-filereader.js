@@ -35,11 +35,12 @@ $(function () {
         // Run ImglyKit with the selected file
         try {
           imgly.run(data);
+          //$('#file').removeAttr("style");
         } catch (e) {
           if(e.name == "NoSupportError") {
             alert("Your browser does not support canvas.");
           } else if(e.name == "InvalidError") {
-            alert("The given file is not an image");
+            //$('#file').css('background-color', 'red');
           }
         }
       };
