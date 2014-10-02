@@ -18168,55 +18168,7 @@ UIControlsStickers = (function(_super) {
     return this.handleResizeKnob();
   };
 
-  /*
-    Move the sticker around by dragging the crosshair
-  */
-
-
-  UIControlsStickers.prototype.handleCrosshair = function() {
-    var canvasRect, maxContainerPosition, minContainerPosition, minimumHeight, minimumWidth,
-      _this = this;
-    canvasRect = new Rect(0, 0, this.canvasControlsContainer.width(), this.canvasControlsContainer.height());
-    minimumWidth = 0;
-    minimumHeight = 0;
-    minContainerPosition = new Vector2(0, -20);
-    maxContainerPosition = new Vector2(canvasRect.width - minimumWidth, canvasRect.height - minimumHeight);
-    return this.crosshair.mousedown(function(e) {
-      var currentContainerPosition, currentMousePosition, initialContainerPosition, initialMousePosition;
-      initialMousePosition = new Vector2(e.clientX, e.clientY);
-      currentMousePosition = new Vector2().copy(initialMousePosition);
-      initialContainerPosition = new Vector2(_this.stickerContainer.position().left, _this.stickerContainer.position().top);
-      currentContainerPosition = new Vector2().copy(initialContainerPosition);
-      $(document).mousemove(function(e) {
-        var mousePositionDifference;
-        currentMousePosition.set(e.clientX, e.clientY);
-        mousePositionDifference = new Vector2().copy(currentMousePosition).substract(initialMousePosition);
-        currentContainerPosition.copy(initialContainerPosition).add(mousePositionDifference).clamp(minContainerPosition, maxContainerPosition);
-        _this.stickerContainer.css({
-          left: currentContainerPosition.x,
-          top: currentContainerPosition.y,
-          width: _this.operationOptions.stickerImageWidth,
-          height: _this.operationOptions.stickerImageHeight
-        });
-        _this.resizeKnob.css({
-          left: _this.operationOptions.scale
-        });
-        if (_this.stickerContainer.position().left + _this.operationOptions.scale > _this.canvasControlsContainer.width() + 20) {
-          _this.operationOptions.scale = _this.canvasControlsContainer.width() - _this.stickerContainer.position().left + 20;
-        }
-        _this.operationOptions.stickerPosition = new Vector2().copy(currentContainerPosition);
-        _this.operationOptions.widthRange = _this.canvasControlsContainer.width();
-        _this.operationOptions.heightRange = _this.canvasControlsContainer.height();
-        _this.operation.setOptions(_this.operationOptions);
-        return _this.emit("renderPreview");
-      });
-      return $(document).mouseup(function() {
-        $(document).off("mousemove");
-        return $(document).off("mouseup");
-      });
-    });
-  };
-
+  
   /*
     Handles the dragging of resize knob
   */
@@ -19318,6 +19270,15 @@ UIControlsCrop = (function(_super) {
         options: {
           size: "16:9"
         }
+      }, {
+        name: "9:16",
+        cssClass: "9-16",
+        method: "setSize",
+        "arguments": ["9:16"],
+        tooltip: "9:16 crop",
+        options: {
+          size: "9:16"
+        }
       }
     ];
   }
@@ -19764,6 +19725,9 @@ CropOperation = (function(_super) {
         this.options.ratio = 4 / 3;
         break;
       case "16:9":
+        this.options.ratio = 16 / 9;
+        break;
+      case "9:16":
         this.options.ratio = 9 / 16;
         break;
     }

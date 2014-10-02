@@ -1,3 +1,98 @@
+body{
+    background-color: #000;
+  }
+  .panel-heading, .panel-success{
+    background-color: #666666!important;
+    border-color: #666666!important;
+  }
+  .container{
+    min-width: 1000px;
+    padding-top: 40px;
+  }
+    #container {
+      width: 520px;
+      height: 520px;
+    }
+    #result_container{
+      height: auto;
+      width: auto;
+      background-color: #ff9100;
+    }
+    .thumbnail{
+      width: auto;
+      float: right;
+    }
+    /*HIDE NON-CROP FILTERS*/
+    .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-stickers,
+    .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-filters,
+    .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-orientation,
+    .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-focus,
+    .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-brightness,
+    .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-contrast,
+    .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-saturation,
+    .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-text,
+    .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-frames,
+    .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-custom{
+      display:none!important;
+    }
+    .panel-success{
+      min-width: 550px;
+    }
+    .remove{
+      position: relative;
+      left: 40%;
+    }
+    .top{
+      position: fixed;
+      height: 100px;
+      width: 100%;
+      z-index: 1000;
+      box-shadow: 0px 5px 5px -5px;
+      background-color: #fff;
+    }
+    .logo{
+      background-image: url('http://reuters.tv/images/logo.png');
+      background-repeat: no-repeat;
+      color: #000;
+      width: 350px;
+      height: 130px;
+      border-style: none;
+      top: -25px;
+      left: 100px;
+    }
+    .btn-default, #renderButton{
+      font-family: Knowledge;
+    }
+    .panel, .panel-heading{
+      padding: 20px!important;
+      border-radius: 3px!important;
+      background: #fff!important;
+      -webkit-box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.2)!important;
+      -moz-box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.2)!important;
+      box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.2)!important;
+      margin-bottom: 20px!important;
+    }
+    .crop{
+      position: absolute;
+      top: 20px;
+      width: auto;
+      height: auto;
+    }
+    .render{
+      position: relative;
+      top: 20px;
+    }
+    #file{
+      z-index: 1000;
+    }
+    .help-block{
+    position:relative; 
+    z-index: 3000;
+    color: red;
+    font-weight: bold;
+    padding: 246px 46px;
+    }   
+
 @import url(spectrum.css);
 /* line 10, ../sass/imgly.sass */
 .imgly-container {
@@ -84,8 +179,8 @@
   position: absolute;
   top: 0;
   left: 0;
-  margin-top: -17px;
-  margin-left: -17px;
+  margin-top: 27px;
+  margin-left: 27px;
   cursor: pointer;
 }
 /* line 21, ../sass/ui/canvas-controls/_generic.sass */
@@ -143,6 +238,8 @@
   top: 0;
   left: 0;
   cursor: move;
+  border: 20px solid #ff9100;
+  opacity: .5;
 }
 /* line 1, ../sass/ui/canvas-controls/_text.sass */
 .imgly-container .imgly-canvas-container .imgly-canvas-text-container, .imgly-container .imgly-canvas-container .imgly-canvas-sticker-container {
@@ -230,9 +327,10 @@
   bottom: 0;
   left: 0;
   box-sizing: content-box;
-  height: 80px;
+  height: 80px!important;
   width: 100%;
   border-top: 1px solid #363636;
+  background-color: #000!important;
   /* Back and Done buttons
    */
   /* Back button
@@ -344,9 +442,9 @@
 }
 /* line 32, ../sass/ui/controls/_list.sass */
 .imgly-container .imgly-controls-container .imgly-controls-list .imgly-controls-item:hover {
-  -webkit-box-shadow: 0 -2px 0 0 #9fbdff inset;
-  -moz-box-shadow: 0 -2px 0 0 #9fbdff inset;
-  box-shadow: 0 -2px 0 0 #9fbdff inset;
+  -webkit-box-shadow: 0 -2px 0 0 #ff9100 inset;
+  -moz-box-shadow: 0 -2px 0 0 #ff9100 inset;
+  box-shadow: 0 -2px 0 0 #ff9100 inset;
 }
 /* line 1, ../sass/ui/controls/_slider.sass */
 .imgly-container .imgly-controls-container .imgly-controls-slider-wrapper, .imgly-container .imgly-controls-container .imgly-controls-slider-bar {
@@ -837,6 +935,9 @@
 /* line 5, ../sass/ui/controls/_crop.sass */
 .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-16-9 {
   background-image: url("assets/option-crop-16-9.png");
+}
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-9-16 {
+  background-image: url("assets/option-crop-9-16.png");
 }
 /* line 5, ../sass/ui/controls/_focus.sass */
 .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-radial {

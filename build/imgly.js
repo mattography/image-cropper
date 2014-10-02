@@ -5701,6 +5701,9 @@ CropOperation = (function(_super) {
       case "16:9":
         this.options.ratio = 16 / 9;
         break;
+      case "9:16":
+        this.options.ratio = 9 / 16;
+        break;
       case "free":
         this.options.ratio = 0;
     }

@@ -88,3 +88,23 @@ $(function () {
     });
   });
 });
+
+//HIDE CONTROLS UNTIL IMAGE SELECTED//
+$(function () {
+    $("#reset, #renderButton, .render").hide();
+
+    //ONLY SHOW RENDERED VIEW WHEN RENDER BUTTON CLICKED//
+    $("#renderButton").click(function () {
+        $(".render").fadeIn("slow").animate({
+            right: '50px'
+        });
+        $(".render, #result_container").show();
+    })
+    //RESET RENDER VIEW//
+    $("#reset").click(function () {
+        $(".cropper").empty();
+    });
+    $("#file").click(function () {
+        $("#reset, #renderButton").show();
+    });
+});
