@@ -67,10 +67,11 @@ $(function () {
     // `dataUrl` now contains a resized rendered image with
     // a size of 100x100 pixels while _not_ keeping the ratio
 
-    imgly.renderToDataURL("png", { size: "1280" }, function (err, dataUrl) {
+    imgly.renderToDataURL("image/jpeg", { size: "1280" }, function (err, dataUrl) {
       // `dataUrl` now contains a resized rendered image with
       // a width of 300 pixels while keeping the ratio
 
+    
       var image = $("<img><br>").attr({
         src: dataUrl
       });

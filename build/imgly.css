@@ -92,7 +92,8 @@ body{
     font-weight: bold;
     padding: 246px 46px;
     }   
-
+/*USED TO HIGHLIGHT FILE INPUT FOR WRONG FILE TYPE*/
+/*div#file.dynamic_style{ background-color: #ff9100 }*/
 @import url(spectrum.css);
 /* line 10, ../sass/imgly.sass */
 .imgly-container {
@@ -238,7 +239,10 @@ body{
   top: 0;
   left: 0;
   cursor: move;
-  border: 20px solid #ff9100;
+  border-left: 20px solid #ff9100;
+  border-right: 20px solid #ff9100;
+  border-top: 20px solid #ff9100;
+  border-bottom: 60px solid #ff9100;
   opacity: .5;
 }
 /* line 1, ../sass/ui/canvas-controls/_text.sass */
@@ -922,15 +926,18 @@ body{
 }
 /* line 5, ../sass/ui/controls/_crop.sass */
 .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-custom {
+  display:none;
   background-image: url("assets/option-crop-custom.png");
 }
 /* line 5, ../sass/ui/controls/_crop.sass */
 .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-square {
   background-image: url("assets/option-crop-square.png");
+  display:none;
 }
 /* line 5, ../sass/ui/controls/_crop.sass */
 .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-4-3 {
   background-image: url("assets/option-crop-4-3.png");
+  display:none;
 }
 /* line 5, ../sass/ui/controls/_crop.sass */
 .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-16-9 {

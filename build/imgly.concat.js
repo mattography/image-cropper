@@ -19702,13 +19702,13 @@ CropOperation = (function(_super) {
       _base1.end = new Vector2(0.9, 0.9);
     }
     if ((_base2 = this.options).ratio == null) {
-      _base2.ratio = 4 / 3;
+      _base2.ratio = 9 / 16;
     }
   }
 
   CropOperation.prototype.setRatio = function(ratio) {
     this.options.ratio = ratio;
-    return this.setSize("4 / 3");
+    return this.setSize("9:16");
   };
 
   CropOperation.prototype.setSize = function(size) {

@@ -5682,7 +5682,7 @@ CropOperation = (function(_super) {
 
   CropOperation.prototype.setRatio = function(ratio) {
     this.options.ratio = ratio;
-    return this.setSize("square");
+    return this.setSize("9:16");
   };
 
   CropOperation.prototype.setSize = function(size) {
